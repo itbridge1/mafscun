@@ -100,13 +100,23 @@
     @php
         $description = $_aboutUs->description ?? '';
         $description = preg_replace_callback(
-            '/(<img\b[^>]*\bsrc=["\'])([^"\']+)(["\'])/i',
+            '/(\b(?:src|data-src)=["\'])([^"\']+)(["\'])/i',
             function ($match) {
                 $src = html_entity_decode($match[2], ENT_QUOTES | ENT_HTML5, 'UTF-8');
                 if (str_starts_with($src, '/images/')) {
                     $src = asset(ltrim($src, '/'));
                 }
                 return $match[1] . e($src) . $match[3];
+            },
+            $description
+        );
+        $description = preg_replace_callback(
+            '/(\bsrcset=["\'])([^"\']+)(["\'])/i',
+            function ($match) {
+                $srcset = preg_replace_callback('/(^|,\s*)(\/images\/[^\s,]+)/', function ($source) {
+                    return $source[1] . asset(ltrim($source[2], '/'));
+                }, html_entity_decode($match[2], ENT_QUOTES | ENT_HTML5, 'UTF-8'));
+                return $match[1] . e($srcset) . $match[3];
             },
             $description
         );
@@ -126,7 +136,7 @@
                         {{-- Prefer the image already embedded in the article; otherwise show the profile photo. --}}
                         @if($_aboutUs->photo && !preg_match('/<img\b/i', $description))
                             <div class="detail-featured-image-wrapper">
-                                <img src="{{ \App\Facades\ViewHelper::getImagePath('aboutUs', $_aboutUs->photo) }}" 
+                                <img src="{{ asset('images/aboutUs/' . $_aboutUs->photo) }}"
                                      alt="{{ $_aboutUs->title }}" />
                             </div>
                         @endif
