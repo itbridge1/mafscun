@@ -97,6 +97,20 @@
 @endsection
 
 @section('content')
+    @php
+        $description = $_aboutUs->description ?? '';
+        $description = preg_replace_callback(
+            '/(<img\b[^>]*\bsrc=["\'])([^"\']+)(["\'])/i',
+            function ($match) {
+                $src = html_entity_decode($match[2], ENT_QUOTES | ENT_HTML5, 'UTF-8');
+                if (str_starts_with($src, '/images/')) {
+                    $src = asset(ltrim($src, '/'));
+                }
+                return $match[1] . e($src) . $match[3];
+            },
+            $description
+        );
+    @endphp
     <!-- Detail Page Hero Header -->
     @include('website.common.page-heading')
 
@@ -110,14 +124,14 @@
                     </h2>
                     <div class="detail-content-wrapper clearfix {{ empty(trim(strip_tags($_aboutUs->description ?? ''))) ? 'detail-content-empty' : '' }}" style="{{ empty(trim(strip_tags($_aboutUs->description ?? ''))) ? '' : 'border-left: 5px solid var(--brand-green, #01a755); padding-left: 20px;' }}">
                         {{-- Prefer the image already embedded in the article; otherwise show the profile photo. --}}
-                        @if($_aboutUs->photo && !preg_match('/<img\b/i', $_aboutUs->description ?? ''))
+                        @if($_aboutUs->photo && !preg_match('/<img\b/i', $description))
                             <div class="detail-featured-image-wrapper">
                                 <img src="{{ \App\Facades\ViewHelper::getImagePath('aboutUs', $_aboutUs->photo) }}" 
                                      alt="{{ $_aboutUs->title }}" />
                             </div>
                         @endif
-                        @if(!empty(trim(strip_tags($_aboutUs->description ?? ''))))
-                            <div class="desc">{!! $_aboutUs->description !!}</div>
+                        @if(!empty(trim(strip_tags($description))))
+                            <div class="desc">{!! $description !!}</div>
                         @endif
                     </div>
                 </div>
