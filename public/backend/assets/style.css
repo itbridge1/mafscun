@@ -1,0 +1,53 @@
+.form-control:focus {
+    border-color: #DD2A95;
+    outline: 0;
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(233, 102, 139, 0.6);
+
+}
+.form-check-input:focus{
+    border-color: #DD2A95;
+    outline: 0;
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(233, 102, 139, 0.6);
+}
+.btn:focus{
+    border-color: #DD2A95;
+    outline: 0;
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(233, 102, 139, 0.6);
+}
+.help-block{
+    display: block;
+}
+.red{
+    color: red!important;
+}
+.bg-light{
+    background-color: #f8f9fa !important;
+}
+.blue{
+    color: #3490dc;
+}
+.green{
+    color: #38c172;
+}
+.orange{
+    color: #f6993f;
+}
+.sidebar{
+    background: #0f2f42;
+    color: white;
+}
+.marine{
+    color: aquamarine;
+}
+.blue{
+    color: blue;
+}
+.teal {
+    color: #4dc0b5;
+}
+.indigo {
+    color: #6574cd;
+}
+.green {
+    color: #38c172;
+}

@@ -1,0 +1,230 @@
+{
+	"info": {
+		"_postman_id": "2db496a7-05c0-43f2-8924-f7b78ab3df94",
+		"name": "Bagmati Proscun API Collection",
+		"description": "API collection for Bagmati Proscun Event Registration and Verification System.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Public API",
+			"item": [
+				{
+					"name": "Site Basic Information",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/site-info",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"site-info"
+							]
+						},
+						"description": "Fetch site basic settings, including title, subtitle, contact email, phone, location, site logo, company logo, and powered-by info."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Admin Mobile App",
+			"item": [
+				{
+					"name": "Admin Login",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"admin@gmail.com\",\n    \"password\": \"password\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/admin/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"login"
+							]
+						},
+						"description": "Authenticates the admin user and returns a Sanctum bearer token."
+					},
+					"response": []
+				},
+				{
+					"name": "Scan QR & Mark Attendance",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{admin_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"booking_id\": 3,\n    \"token\": \"e1e89b94-dc20-4420-b5a1-befeb01ee542\",\n    \"event\": \"Jigyasa\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/event-bookings/scan",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"event-bookings",
+								"scan"
+							]
+						},
+						"description": "Scans the entry QR code payload and marks the attendance as present."
+					},
+					"response": []
+				},
+				{
+					"name": "Show Booking Info by Token",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{admin_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/event-bookings/e1e89b94-dc20-4420-b5a1-befeb01ee542",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"event-bookings",
+								"e1e89b94-dc20-4420-b5a1-befeb01ee542"
+							]
+						},
+						"description": "Get detailed booking information using a booking token for mobile preview."
+					},
+					"response": []
+				},
+				{
+					"name": "List Bookings by Event ID",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{admin_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/events/2/bookings",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"events",
+								"2",
+								"bookings"
+							]
+						},
+						"description": "Fetch all event bookings for a specific event."
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8000",
+			"type": "string"
+		},
+		{
+			"key": "admin_token",
+			"value": "YOUR_SANCTUM_BEARER_TOKEN_HERE",
+			"type": "string"
+		}
+	]
+}
