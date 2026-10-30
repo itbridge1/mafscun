@@ -6,7 +6,7 @@ return [
         'url' => env('MIS_URL'),
         'dock_enabled' => env('DOCK', true),
     ],
-    'events_enabled' => env('EVENT', true),
+    'events_enabled' => env('EVENT', env('EVENTS_ENABLED', true)),
     'agm_form_enabled' => env('AGM_FORM', true),
 
     /*

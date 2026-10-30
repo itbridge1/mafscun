@@ -27,9 +27,14 @@ class UpdateAboutUsValidation extends FormRequest
      */
     public function rules()
     {
+        $recordId = $this->route('messageCommitment') ?? $this->route('aboutU') ?? $this->route('aboutUs') ?? $this->id;
+        if (is_object($recordId)) {
+            $recordId = $recordId->id;
+        }
+
         return [
-            'title'         => ['required', 'max:155', 'unique:about_us,title,'.$this->id],
-            'slug'          => ['required', 'max:155', 'unique:about_us,slug,'.$this->id],
+            'title'         => ['required', 'max:155', 'unique:about_us,title,'.$recordId],
+            'slug'          => ['required', 'max:155', 'unique:about_us,slug,'.$recordId],
             'sub_title'     => ['nullable', 'max:155',],
             'main_image'    => ['nullable','file', 'max:2048', 'mimes:jpg,png,jpeg,gif,tif,bmp'],
             'description'   => ['nullable'],
@@ -42,7 +47,7 @@ class UpdateAboutUsValidation extends FormRequest
     {
         $this->merge([
             'slug' => Str::slug($this->title),
-            'is_message' => $this->boolean('is_message') ? 1 : 0,
+            'is_message' => $this->has('is_message') ? ($this->boolean('is_message') ? 1 : 0) : 0,
         ]);
     }
 }

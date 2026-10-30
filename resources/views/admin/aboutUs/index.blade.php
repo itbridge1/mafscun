@@ -65,7 +65,6 @@
                                             <th>SN</th>
                                             <th>Title</th>
                                             <th>SubTitle</th>
-                                            <th>Type</th>
                                             <th>Photo</th>
                                             <th>Status</th>
                                             <th>Action</th>
@@ -75,8 +74,9 @@
                                     @if(isset($data['rows']) && $data['rows'] -> count () >= 0)
                                         @foreach($data['rows'] as $key => $row)
                                             <tr class="ui-sortable-handle">
-                                                <td class="center">
-                                                    <label class="pos-rel">
+                                                <td class="center text-center">
+                                                    <i class="fas fa-grip-vertical text-secondary mr-1" style="cursor: grab;" title="Drag to reorder"></i>
+                                                    <label class="pos-rel mb-0">
                                                         <input type="hidden" name="ids[]" value="{{$row->id}}">
                                                         <input type="checkbox" class="ace" />
                                                         <span class="lbl"></span>
@@ -87,13 +87,6 @@
                                                   {{$row->title}}
                                                 </td>
                                                 <td>{{$row->sub_title}}</td>
-                                                <td>
-                                                    @if($row->is_message)
-                                                        <span class="badge badge-info"><i class="fas fa-comment-dots mr-1"></i> Message</span>
-                                                    @else
-                                                        <span class="badge badge-secondary"><i class="fas fa-file-alt mr-1"></i> Page</span>
-                                                    @endif
-                                                </td>
                                                 <td>
 												<a class="imageModalOpener"
                                                            data-toggle="modal"
@@ -183,12 +176,14 @@
     <script>
         $(function () {
             $("#example1").DataTable({
-                "responsive": true, "lengthChange": true, "autoWidth": false,"info": true,"paging": true,
+                "responsive": true, "lengthChange": true, "autoWidth": false, "info": true, "paging": true, "ordering": false,
                 "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
             }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
 
             $('table tbody').sortable({
                 helper: fixWidthHelper,
+                cursor: "move",
+                opacity: 0.8,
                 update: function (event,ui) {
                     $('#sorting-update-form').submit();
                 }

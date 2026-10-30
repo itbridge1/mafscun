@@ -928,60 +928,52 @@
         </div>
     @endif
     @if (isset($data['_aboutUs']))
+        @php
+            $hasMessages = isset($data['_messages']) && $data['_messages']->count() > 0;
+            $messageCount = $hasMessages ? $data['_messages']->count() : 0;
+        @endphp
         <!-- ==========About section========== -->
         <div class="container-fluid about-us">
-            <div class="row d-flex justify-content-between">
+            <div class="row {{ $hasMessages ? 'has-messages' : 'no-messages' }}">
                 <!-- About Us Section -->
-                <div class="col-lg-6 about-us-item scroll-reveal">
+                <div class="{{ $hasMessages ? 'col-lg-6' : 'col-12' }} about-us-item scroll-reveal">
                     <h2 class="about-us-title">{{ $data['_aboutUs']->title ?? 'संघको परिचय' }}</h2>
                     <span class="home-section-accent" aria-hidden="true"></span>
                     <p class="about-us-description">
-                        {{ \Illuminate\Support\Str::limit(strip_tags($data['_aboutUs']->description), 720) }}
+                        {{ \Illuminate\Support\Str::limit(strip_tags($data['_aboutUs']->description), $hasMessages ? 720 : 1200) }}
                     </p>
                     <a class="about-us-read-more" href="{{ route('about.detail', $data['_aboutUs']->slug) }}">Explore about us <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
                 </div>
 
-                <section class="col-lg-6 home-messages scroll-reveal" aria-labelledby="homeMessagesTitle">
-                    <h2 class="home-messages__heading" id="homeMessagesTitle">Messages &amp; Commitment</h2>
-                    <div class="home-messages__list">
-                        @if (isset($data['_messages']) && $data['_messages']->count() > 0)
+                @if ($hasMessages)
+                    <section class="col-lg-6 home-messages scroll-reveal" aria-labelledby="homeMessagesTitle">
+                        <div class="d-flex align-items-center justify-content-between mb-2">
+                            <h2 class="home-messages__heading mb-0" id="homeMessagesTitle">Messages &amp; Commitment</h2>
+                            @if ($messageCount > 2)
+                                <span class="badge badge-light text-muted font-weight-normal border" style="font-size: 0.76rem; padding: 4px 9px; border-radius: 20px;">
+                                    <i class="fas fa-chevron-down mr-1 text-success"></i> Scroll down for more ({{ $messageCount }})
+                                </span>
+                            @endif
+                        </div>
+                        <div class="home-messages__list {{ $messageCount > 2 ? 'home-messages__list--scrollable' : '' }}">
                             @foreach ($data['_messages'] as $messageItem)
                                 <article class="home-message-card">
                                     <h3>{{ $messageItem->title }}</h3>
                                     <div class="home-message-card__body">
                                         <img src="{{ \App\Facades\ViewHelper::getImagePath('aboutUs', $messageItem->photo) }}" alt="{{ $messageItem->title }}" onerror="this.onerror=null;this.src='{{ asset('images/no-image.png') }}'">
-                                        <p>{{ \App\Facades\ViewHelper::getStrippedContent($messageItem->description, 280) }}
+                                        <p>
+                                            @if(!empty($messageItem->sub_title))
+                                                <strong class="d-block text-secondary mb-1" style="font-size: 0.82rem;">{{ $messageItem->sub_title }}</strong>
+                                            @endif
+                                            {{ \App\Facades\ViewHelper::getStrippedContent($messageItem->description, 280) }}
                                             <a href="{{ route('about.detail', $messageItem->slug) }}">Read more</a>
                                         </p>
                                     </div>
                                 </article>
                             @endforeach
-                        @else
-                            @if (isset($data['_commitmentFromCEO']))
-                                <article class="home-message-card">
-                                    <h3>{{ $data['_commitmentFromCEO']->title ?? 'Commitment From CEO' }}</h3>
-                                    <div class="home-message-card__body">
-                                        <img src="{{ \App\Facades\ViewHelper::getImagePath('aboutUs', $data['_commitmentFromCEO']->photo) }}" alt="{{ $data['_commitmentFromCEO']->title ?? 'Commitment From CEO' }}" onerror="this.onerror=null;this.src='{{ asset('images/no-image.png') }}'">
-                                        <p>{{ \App\Facades\ViewHelper::getStrippedContent($data['_commitmentFromCEO']->description, 280) }}
-                                            <a href="{{ route('about.detail', $data['_commitmentFromCEO']->slug) }}">Read more</a>
-                                        </p>
-                                    </div>
-                                </article>
-                            @endif
-                            @if (isset($data['_chairmanVoice']))
-                                <article class="home-message-card">
-                                    <h3>{{ $data['_chairmanVoice']->title ?? 'Chairman Voice' }}</h3>
-                                    <div class="home-message-card__body">
-                                        <img src="{{ \App\Facades\ViewHelper::getImagePath('aboutUs', $data['_chairmanVoice']->photo) }}" alt="{{ $data['_chairmanVoice']->title ?? 'Chairman Voice' }}" onerror="this.onerror=null;this.src='{{ asset('images/no-image.png') }}'">
-                                        <p>{{ \App\Facades\ViewHelper::getStrippedContent($data['_chairmanVoice']->description, 280) }}
-                                            <a href="{{ route('about.detail', $data['_chairmanVoice']->slug) }}">Read more</a>
-                                        </p>
-                                    </div>
-                                </article>
-                            @endif
-                        @endif
-                    </div>
-                </section>
+                        </div>
+                    </section>
+                @endif
 
             </div>
         </div>

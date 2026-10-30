@@ -31,7 +31,7 @@ class AboutUsController extends BaseController
     public function index()
     {
         $data = [];
-        $data['rows'] = $this->model->rank()->paginate(config('helper.pagination_limit'));
+        $data['rows'] = $this->model->where('is_message', 0)->rank()->paginate(config('helper.pagination_limit'));
 
         return view(parent::loadCommonDataToView($this->view_path . '.index'), compact('data'));
     }
@@ -55,7 +55,8 @@ class AboutUsController extends BaseController
     public function store(StoreAboutUsValidation $request)
     {
         $data = $request->validated();
-//        dd($data);
+        $data['is_message'] = 0;
+
         if($request->hasFile('main_image')){
             $this->processImage($data['main_image']);
             $data['photo'] = $this->file_name;
@@ -63,7 +64,7 @@ class AboutUsController extends BaseController
 
         $aboutUs = $this->model->create($data);
 
-        $request->session()->flash('success_message', $this->panel.' '.$aboutUs->name. ' added Successfully');
+        $request->session()->flash('success_message', $this->panel.' '.$aboutUs->title. ' added Successfully');
         return redirect()->route($this->base_route.'.index');
     }
 
@@ -109,6 +110,7 @@ class AboutUsController extends BaseController
         $row = $this->model->find($id);
 
         $data = $request->validated();
+        $data['is_message'] = 0;
 
         if($request->hasFile('main_image')){
             $this->processImage($data['main_image']);
@@ -118,7 +120,7 @@ class AboutUsController extends BaseController
         }
         $row->update($data);
 
-        $request->session()->flash('success_message',$this->panel.' '. $row->name . ' updated Successfully');
+        $request->session()->flash('success_message',$this->panel.' '. $row->title . ' updated Successfully');
         return redirect()->route($this->base_route.'.index');
     }
 

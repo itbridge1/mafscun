@@ -218,6 +218,28 @@ nav.main-navbar .action-buttons-mobile .btn-outline-success:hover { color: #fff 
 .home-messages { display: flex; flex-direction: column; gap: 14px; }
 .home-messages__heading { color: var(--public-ink); letter-spacing: -.025em; }
 .home-messages__list { display: grid; flex: 1; align-content: start; gap: 12px; }
+.home-messages__list--scrollable {
+    max-height: 440px;
+    overflow-y: auto;
+    padding-right: 6px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--public-green, #1e7e34) #edf4ef;
+    overscroll-behavior: contain;
+}
+.home-messages__list--scrollable::-webkit-scrollbar {
+    width: 6px;
+}
+.home-messages__list--scrollable::-webkit-scrollbar-track {
+    background: #edf4ef;
+    border-radius: 6px;
+}
+.home-messages__list--scrollable::-webkit-scrollbar-thumb {
+    background: var(--public-green, #1e7e34);
+    border-radius: 6px;
+}
+.home-messages__list--scrollable::-webkit-scrollbar-thumb:hover {
+    background: #145523;
+}
 .home-message-card { min-width: 0; padding: 16px; border: 1px solid var(--public-line); border-radius: 11px; background: #fbfdfb; }
 .home-message-card h3 { margin: 0 0 10px; color: var(--public-green); font-size: .98rem; font-weight: 750; }
 .home-message-card__body { display: flex; align-items: flex-start; gap: 13px; }
@@ -225,7 +247,8 @@ nav.main-navbar .action-buttons-mobile .btn-outline-success:hover { color: #fff 
 .home-message-card__body p { min-width: 0; margin: 0; font-size: .88rem; line-height: 1.6; }
 .home-message-card__body a { display: inline-block; margin-left: 4px; color: var(--public-green); font-weight: 700; white-space: nowrap; }
 @media (min-width: 992px) {
-    .about-us > .row { display: grid !important; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 18px; }
+    .about-us > .row.has-messages, .about-us > .row:not(.no-messages) { display: grid !important; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 18px; }
+    .about-us > .row.no-messages { display: block !important; }
     .about-us > .row > .about-us-item, .about-us > .row > .home-messages { width: auto; max-width: none; flex: none; }
 }
 .affiliation-section { margin: 44px 0 0; padding: 52px 0 46px; border-top: 1px solid #e7eee9; border-bottom: 1px solid #e7eee9; background: linear-gradient(180deg, #f7faf7, #fff); }

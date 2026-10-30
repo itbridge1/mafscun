@@ -25,9 +25,20 @@
                     || $errors->has('social.twitter_link')
                     || $errors->has('social.youtube_link')
                     || $errors->has('powered_by_link')
-                    || $errors->has('keywords')
-                    || $errors->has('description')
                     || $errors->has('social.insta_link'))
+                        <span class="red">*</span>
+                    @endif
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="meta-tab"
+                   data-toggle="pill" href="#meta-tab-content"
+                   role="tab" aria-controls="meta-tab-content"
+                   aria-selected="false">
+                    <i class="fas fa-search mr-1 text-primary"></i> SEO &amp; Header Meta
+                    @if($errors->has('keywords')
+                    || $errors->has('description')
+                    || $errors->has('google_site_verification'))
                         <span class="red">*</span>
                     @endif
                 </a>
@@ -51,6 +62,9 @@
              
             <div class="tab-pane fade" id="social-tab-content" role="tabpanel" aria-labelledby="social-tab">
                 @include($_view_path.'.common.social')
+            </div>
+            <div class="tab-pane fade" id="meta-tab-content" role="tabpanel" aria-labelledby="meta-tab">
+                @include($_view_path.'.common.meta')
             </div>
             <div class="tab-pane fade" id="content-settings" role="tabpanel" aria-labelledby="settings-tab">
                 @include($_view_path.'.common.setting')

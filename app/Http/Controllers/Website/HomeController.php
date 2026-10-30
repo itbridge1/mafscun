@@ -99,24 +99,16 @@ $data['_serviceslist'] = ServiceCategory::select('title','slug','photo')->active
         $data['_popup'] = Notice::where('is_popup',1)->active()->get();
 
 
-        if($this->_site_setting){
-            $data['_aboutUs'] = AboutUs::select('title', 'slug', 'photo','description')
+        // Featured About Us: top ranked general About Us page (or fallback to about_1 setting)
+        $data['_aboutUs'] = AboutUs::select('title', 'slug', 'photo', 'description')
+            ->where('is_message', 0)
+            ->active()
+            ->rank()
+            ->first();
+
+        if (!$data['_aboutUs'] && $this->_site_setting && $this->_site_setting->about_1) {
+            $data['_aboutUs'] = AboutUs::select('title', 'slug', 'photo', 'description')
                 ->where('id', $this->_site_setting->about_1)
-                ->first();
-
-            if (!$data['_aboutUs']) {
-                $data['_aboutUs'] = AboutUs::select('title', 'slug', 'photo','description')
-                    ->where('is_message', 0)
-                    ->active()
-                    ->first();
-            }
-
-            $data['_commitmentFromCEO'] = AboutUs::select('title', 'slug', 'photo','description')
-                ->where('id', $this->_site_setting->about_2)
-                ->first();
-
-            $data['_chairmanVoice'] = AboutUs::select('title', 'slug', 'photo','description')
-                ->where('id', $this->_site_setting->about_3)
                 ->first();
         }
 
@@ -152,9 +144,9 @@ $data['_serviceslist'] = ServiceCategory::select('title','slug','photo')->active
     //aboutUSPage
     public function about()
     {
-        $_aboutUs = AboutUs::where('id', $this->_site_setting->about_1)->first();
-        if (!$_aboutUs) {
-            $_aboutUs = AboutUs::where('is_message', 0)->active()->first();
+        $_aboutUs = AboutUs::where('is_message', 0)->active()->rank()->first();
+        if (!$_aboutUs && $this->_site_setting && $this->_site_setting->about_1) {
+            $_aboutUs = AboutUs::where('id', $this->_site_setting->about_1)->first();
         }
         $_aboutUsList = AboutUs::where('is_message', 0)
             ->when($_aboutUs, function($q) use ($_aboutUs) {

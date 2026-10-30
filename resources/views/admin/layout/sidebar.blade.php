@@ -171,6 +171,14 @@
                                         </p>
                                     </a>
                                 </li>
+                                <li class="nav-item">
+                                    <a href="{{route('admin.messageCommitment.index')}}" class="nav-link {{request()->is('admin/messageCommitment*')?'active':''}}">
+                                        <i class="nav-icon fas marine fa-envelope-open-text"></i>
+                                        <p>
+                                            Messages & Commitment
+                                        </p>
+                                    </a>
+                                </li>
                             @endcanany
 
                             @canany(['slider-create','slider-index'])
@@ -379,6 +387,8 @@
                                     </a>
                                 </li>
                             @endcanany
+                            {{-- AgmForm & SuggestionForm commented out --}}
+                            {{--
                             @if(config('services.agm_form_enabled', true))
                                 <li class="nav-item">
                                     <a href="{{route('admin.agmForm.index')}}" class="nav-link {{request()->is('admin/agmForm*')?'active':''}}">
@@ -398,6 +408,7 @@
                                     </p>
                                 </a>
                             </li>
+                            --}}
 
                                 
                             @canany(['menu-create','menu-index'])

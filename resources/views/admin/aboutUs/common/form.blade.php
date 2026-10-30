@@ -93,21 +93,7 @@
             </div>
         </div>
 
-        <div class="col-md-6">
-            <div class="form-group">
-                <label for="is_message">Type / सन्देश हो? (Is Message)</label>
-                <div class="custom-control custom-switch mt-2">
-                    <input type="checkbox" name="is_message" value="1" class="custom-control-input" id="is_message" {{ old('is_message', @$data['row']->is_message) ? 'checked' : '' }}>
-                    <label class="custom-control-label font-weight-bold text-dark" for="is_message">
-                        सन्देश खण्ड (Messages &amp; Commitment) मा देखाउने
-                    </label>
-                </div>
-                <small class="text-muted d-block mt-1">
-                    <strong>Note:</strong> यदि यो सन्देश हो (Is Message = ON), यो गृहपृष्ठको "Messages &amp; Commitment" सेक्सनमा देखिनेछ र "About Us" मेनु ड्रपडाउनबाट हट्नेछ । यदि OFF भएमा "About Us" पृष्ठ र मेनु ड्रपडाउनमा देखिनेछ ।
-                </small>
-            </div>
-        </div>
-
+        <input type="hidden" name="is_message" value="0">
     </div>
 </div>
 <!-- /.card-body -->

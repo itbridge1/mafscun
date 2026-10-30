@@ -141,6 +141,10 @@ Route::group(['prefix' => 'admin/', 'as' => 'admin.', 'middleware'=>['auth', 'ro
         ->name('aboutUs.sort');
     Route::resource('aboutUs',             \App\Http\Controllers\Admin\AboutUsController::class);
 
+    Route::post('messageCommitment/sort',  [\App\Http\Controllers\Admin\MessageCommitmentController::class, 'sort'])
+        ->name('messageCommitment.sort');
+    Route::resource('messageCommitment',   \App\Http\Controllers\Admin\MessageCommitmentController::class);
+
     Route::post('hrm/sort',            [\App\Http\Controllers\Admin\HrmController::class, 'sort'])
         ->name('hrm.sort');
     Route::resource('hrm',             \App\Http\Controllers\Admin\HrmController::class);

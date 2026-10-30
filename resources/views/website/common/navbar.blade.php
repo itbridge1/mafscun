@@ -405,43 +405,45 @@
         </ul>
         
         <!-- Right side: action buttons inside mobile menu -->
-        <div class="d-flex align-items-center ml-auto order-xl-3 action-buttons-mobile">
-            @if(config('services.events_enabled', true) && auth()->check())
-                <div class="dropdown">
-                    <a class="btn btn-sm btn-outline-success dropdown-toggle font-weight-bold" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="font-size: 0.78rem !important; padding: 5px 10px !important; border-radius: 20px !important; white-space: nowrap !important;">
-                        <i class="fas fa-user-circle mr-1"></i>
-                        <span class="d-sm-inline">
-                        @if(!empty(auth()->user()->name) && !str_starts_with(auth()->user()->name, 'User_'))
-                            {{ auth()->user()->name }}
-                        @elseif(auth()->user()->phone)
-                            {{ substr(auth()->user()->phone, -10) }}
-                        @else
-                            {{ explode('@', auth()->user()->email)[0] ?? 'Account' }}
-                        @endif
-                        </span>
-                    </a>
-                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown" style="position: absolute;">
-                        <a class="dropdown-item font-weight-bold text-dark" href="{{ route('user.dashboard') }}">
-                            <i class="fas fa-ticket-alt mr-2 text-success"></i> My Bookings
+        @if(config('services.events_enabled', true))
+            <div class="d-flex align-items-center ml-auto order-xl-3 action-buttons-mobile">
+                @if(auth()->check())
+                    <div class="dropdown">
+                        <a class="btn btn-sm btn-outline-success dropdown-toggle font-weight-bold" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="font-size: 0.78rem !important; padding: 5px 10px !important; border-radius: 20px !important; white-space: nowrap !important;">
+                            <i class="fas fa-user-circle mr-1"></i>
+                            <span class="d-sm-inline">
+                            @if(!empty(auth()->user()->name) && !str_starts_with(auth()->user()->name, 'User_'))
+                                {{ auth()->user()->name }}
+                            @elseif(auth()->user()->phone)
+                                {{ substr(auth()->user()->phone, -10) }}
+                            @else
+                                {{ explode('@', auth()->user()->email)[0] ?? 'Account' }}
+                            @endif
+                            </span>
                         </a>
-                        <a class="dropdown-item font-weight-bold text-dark" href="{{ route('user.profile') }}">
-                            <i class="fas fa-user-edit mr-2 text-success"></i> Edit Profile
-                        </a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item text-danger font-weight-bold" href="#" onclick="event.preventDefault(); document.getElementById('logout-user-form').submit();">
-                            <i class="fas fa-sign-out-alt mr-2"></i> Sign Out
-                        </a>
-                        <form id="logout-user-form" action="{{ route('logout.user') }}" method="POST" class="d-none">
-                            @csrf
-                        </form>
+                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown" style="position: absolute;">
+                            <a class="dropdown-item font-weight-bold text-dark" href="{{ route('user.dashboard') }}">
+                                <i class="fas fa-ticket-alt mr-2 text-success"></i> My Bookings
+                            </a>
+                            <a class="dropdown-item font-weight-bold text-dark" href="{{ route('user.profile') }}">
+                                <i class="fas fa-user-edit mr-2 text-success"></i> Edit Profile
+                            </a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item text-danger font-weight-bold" href="#" onclick="event.preventDefault(); document.getElementById('logout-user-form').submit();">
+                                <i class="fas fa-sign-out-alt mr-2"></i> Sign Out
+                            </a>
+                            <form id="logout-user-form" action="{{ route('logout.user') }}" method="POST" class="d-none">
+                                @csrf
+                            </form>
+                        </div>
                     </div>
-                </div>
-            @elseif(config('services.events_enabled', true))
-                <a href="{{ route('login') }}" class="btn btn-sm btn-outline-success font-weight-bold" style="font-size: 0.78rem !important; padding: 5px 10px !important; border-radius: 20px !important; white-space: nowrap !important;">
-                    <i class="fas fa-sign-in-alt mr-1"></i> <span class="d-sm-inline">Sign In</span>
-                </a>
-            @endif
-        </div>
+                @else
+                    <a href="{{ route('login') }}" class="btn btn-sm btn-outline-success font-weight-bold" style="font-size: 0.78rem !important; padding: 5px 10px !important; border-radius: 20px !important; white-space: nowrap !important;">
+                        <i class="fas fa-sign-in-alt mr-1"></i> <span class="d-sm-inline">Sign In</span>
+                    </a>
+                @endif
+            </div>
+        @endif
     </div>
     </div>
 </nav>

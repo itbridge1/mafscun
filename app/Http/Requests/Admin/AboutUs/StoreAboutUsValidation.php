@@ -46,7 +46,7 @@ class StoreAboutUsValidation extends FormRequest
         $this->merge([
             'slug' => Str::slug($this->title),
             'rank' => ViewHelper::getMaxRank(AboutUs::class),
-            'is_message' => $this->boolean('is_message') ? 1 : 0,
+            'is_message' => $this->has('is_message') ? ($this->boolean('is_message') ? 1 : 0) : 0,
         ]);
     }
 

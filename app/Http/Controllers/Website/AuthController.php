@@ -16,6 +16,10 @@ class AuthController extends BaseController
 {
     public function showLogin()
     {
+        if (!config('services.events_enabled', true)) {
+            abort(404);
+        }
+
         if (Auth::check()) {
             return redirect()->intended('/home');
         }
@@ -24,6 +28,10 @@ class AuthController extends BaseController
 
     public function loginWithPassword(Request $request)
     {
+        if (!config('services.events_enabled', true)) {
+            abort(404);
+        }
+
         $request->validate([
             'identifier' => ['required', 'string'],
             'password'   => ['required', 'string'],
@@ -66,6 +74,10 @@ class AuthController extends BaseController
 
     public function sendOtp(Request $request)
     {
+        if (!config('services.events_enabled', true) && !auth()->check()) {
+            abort(404);
+        }
+
         $request->validate([
             'identifier' => ['required', 'string'],
         ]);
@@ -125,7 +137,8 @@ class AuthController extends BaseController
 
         // Send OTP
         if ($type === 'phone') {
-            $message = "Your verification code for Bagmati Proscun is: {$otp}. Valid for 10 mins.";
+            $siteTitle = $this->_site_setting->title ?? 'MAFSCUN';
+            $message = "Your verification code for {$siteTitle} is: {$otp}. Valid for 10 mins.";
             try {
                 $this->sendAakashSms($identifier, $message);
             } catch (\Exception $e) {
@@ -150,6 +163,10 @@ class AuthController extends BaseController
 
     public function verifyOtp(Request $request)
     {
+        if (!config('services.events_enabled', true) && !auth()->check()) {
+            abort(404);
+        }
+
         $request->validate([
             'identifier' => ['required', 'string'],
             'otp_code'   => ['required', 'string', 'size:6'],
