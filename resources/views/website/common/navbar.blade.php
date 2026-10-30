@@ -337,22 +337,52 @@
                 @endif
             </li>
             <li class="nav-item dropdown">
-                <a class="nav-link {{ request()->is('service*')? "active-nav":"" }} dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <a class="nav-link {{ request()->is('service*')? "active-nav":"" }} dropdown-toggle" href="{{ route('service') }}" id="navbarDropdownServices" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     Services
                 </a>
-                @if(isset($_service_categories))
-                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown" >
-                        @foreach($_service_categories as $key => $category)
+                @if(isset($_service_categories) && $_service_categories->count() > 0)
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdownServices">
+                        @foreach($_service_categories as $category)
+                            @php
+                                $hasSubCats = $category->subCategories->count() > 0;
+                                $hasDirectServices = $category->directServices->count() > 0;
+                                $hasChildren = $hasSubCats || $hasDirectServices;
+                            @endphp
                             <li>
-                                <a class="dropdown-item {{ request()->is('service/'.$category->slug)? "active-nav":"" }}" href="{{ route('service.detail', $category->slug) }}">
+                                <a class="dropdown-item {{ request()->is('service/'.$category->slug.'*')? 'active-nav':'' }}" href="{{ route('service.detail', $category->slug) }}">
                                     {{ $category->title }}
+                                    @if($hasChildren)
+                                        <i class="fas fa-chevron-right float-right" style="font-size: 10px; line-height: 1.8;"></i>
+                                    @endif
                                 </a>
-                                @if(isset($category->children) && $category->children->count() > 0)
-                                    <ul class="dropdown-menu dropdown-submenu" >
-                                        @foreach($category->children as $key => $cat)
+                                @if($hasChildren)
+                                    <ul class="dropdown-menu dropdown-submenu">
+                                        @foreach($category->subCategories as $subCat)
+                                            @php $hasServices = $subCat->services->count() > 0; @endphp
                                             <li>
-                                                <a style="font-size: 13px" class="dropdown-item {{ request()->is('service/'.$cat->slug)? "active-nav":"" }}" href="{{ route('service.detail', $cat->slug) }}">
-                                                    {{ $cat->title }}
+                                                <a style="font-size: 13px" class="dropdown-item" href="{{ route('service.detail', $subCat->slug) }}">
+                                                    {{ $subCat->title }}
+                                                    @if($hasServices)
+                                                        <i class="fas fa-chevron-right float-right" style="font-size: 9px; line-height: 2;"></i>
+                                                    @endif
+                                                </a>
+                                                @if($hasServices)
+                                                    <ul class="dropdown-menu dropdown-submenu">
+                                                        @foreach($subCat->services as $svc)
+                                                            <li>
+                                                                <a style="font-size: 12px" class="dropdown-item" href="{{ route('service.detail', $svc->slug) }}">
+                                                                    {{ $svc->title }}
+                                                                </a>
+                                                            </li>
+                                                        @endforeach
+                                                    </ul>
+                                                @endif
+                                            </li>
+                                        @endforeach
+                                        @foreach($category->directServices as $directSvc)
+                                            <li>
+                                                <a style="font-size: 13px" class="dropdown-item" href="{{ route('service.detail', $directSvc->slug) }}">
+                                                    {{ $directSvc->title }}
                                                 </a>
                                             </li>
                                         @endforeach
@@ -393,8 +423,41 @@
                 </ul>
             </li>
            
-            <li class="nav-item">
-                <a class="nav-link  {{ request()->is('resource-list*')? "active-nav":"" }}" href="{{ route('resource-list') }}">Resources</a>
+            <li class="nav-item dropdown">
+                <a class="nav-link {{ request()->is('resource-list*')? "active-nav":"" }} dropdown-toggle" href="{{ route('resource-list') }}" id="navbarDropdownResources" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Resources
+                </a>
+                @if(isset($_resource_types) && $_resource_types->count() > 0)
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdownResources">
+                        <li>
+                            <a class="dropdown-item" href="{{ route('resource-list') }}">
+                                All Resources
+                            </a>
+                        </li>
+                        @foreach($_resource_types as $rType)
+                            @php $hasSubTypes = $rType->subTypes->count() > 0; @endphp
+                            <li>
+                                <a class="dropdown-item" href="{{ route('resource-list', ['filter_resource_type' => $rType->id]) }}">
+                                    {{ $rType->title }}
+                                    @if($hasSubTypes)
+                                        <i class="fas fa-chevron-right float-right" style="font-size: 10px; line-height: 1.8;"></i>
+                                    @endif
+                                </a>
+                                @if($hasSubTypes)
+                                    <ul class="dropdown-menu dropdown-submenu">
+                                        @foreach($rType->subTypes as $subType)
+                                            <li>
+                                                <a style="font-size: 13px" class="dropdown-item" href="{{ route('resource-list', ['filter_resource_type' => $rType->id, 'filter_sub_type' => $subType->id]) }}">
+                                                    {{ $subType->title }}
+                                                </a>
+                                            </li>
+                                        @endforeach
+                                    </ul>
+                                @endif
+                            </li>
+                        @endforeach
+                    </ul>
+                @endif
             </li>
             <li class="nav-item">
                 <a class="nav-link  {{ request()->is('gallery*')? "active-nav":"" }}" href="{{ route('gallery') }}">Gallery</a>

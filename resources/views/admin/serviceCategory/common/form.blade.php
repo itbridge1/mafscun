@@ -2,21 +2,6 @@
     <div class="row">
         <div class="col-md-6">
             <div class="form-group">
-                <label for="name">Parent*</label>
-                {!! Form::select('parent_id',$data['parentCategories']??[], null,[
-                      'class'=> $errors->has('parent_id')?'form-control is-invalid':'form-control',
-                      'placeholder'=>'--SELECT PARENT--',
-                      ]) !!}
-                @error('parent_id')
-                <span class="help-block invalid-feedback">
-                        <strong> {{ $message }} </strong>
-                    </span>
-                @enderror
-            </div>
-        </div>
-
-        <div class="col-md-6">
-            <div class="form-group">
                 <label for="name">Title*</label>
                 {!! Form::text('title', null,[
                       'class'=> $errors->has('title')?'form-control is-invalid':'form-control',

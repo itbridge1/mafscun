@@ -214,14 +214,40 @@
                                 </li>
                             @endcanany
 
-                            @canany(['resource-create','resource-index'])
-                                <li class="nav-item">
-                                    <a href="{{route('admin.resource.index')}}" class="nav-link {{request()->is('admin/resource') || request()->is('admin/resource/*')?'active':''}}">
+                            @canany(['resource-create','resource-index','resourceSubType-create','resourceSubType-index','resourceType-create','resourceType-index'])
+                                <li class="nav-item {{ request()->is('admin/resource*') || request()->is('admin/resourceSubType*') ?'menu-open':'' }}">
+                                    <a href="#" class="nav-link {{ request()->is('admin/resource*') || request()->is('admin/resourceSubType*') ?'active':'' }}">
                                         <i class="nav-icon fas marine fa-download"></i>
-                                        <p>
-                                            Resource
+                                        <p>Resources
+                                            <i class="fas marine fa-angle-left right"></i>
                                         </p>
                                     </a>
+                                    <ul class="nav nav-treeview">
+                                        @canany(['resourceType-create','resourceType-index'])
+                                        <li class="nav-item">
+                                            <a href="{{route('admin.resourceType.index')}}" class="nav-link {{request()->is('admin/dev/resourceType*')?'active':''}}">
+                                                <i class="nav-icon fas marine fa-server"></i>
+                                                <p>Resource Types</p>
+                                            </a>
+                                        </li>
+                                        @endcanany
+                                        @canany(['resourceSubType-create','resourceSubType-index'])
+                                        <li class="nav-item">
+                                            <a href="{{route('admin.resourceSubType.index')}}" class="nav-link {{request()->is('admin/resourceSubType*')?'active':''}}">
+                                                <i class="nav-icon fas marine fa-sitemap"></i>
+                                                <p>Resource Sub Types</p>
+                                            </a>
+                                        </li>
+                                        @endcanany
+                                        @canany(['resource-create','resource-index'])
+                                        <li class="nav-item">
+                                            <a href="{{route('admin.resource.index')}}" class="nav-link {{request()->is('admin/resource') || request()->is('admin/resource/*')?'active':''}}">
+                                                <i class="nav-icon fas marine fa-file-alt"></i>
+                                                <p>Resources</p>
+                                            </a>
+                                        </li>
+                                        @endcanany
+                                    </ul>
                                 </li>
                             @endcanany
 
@@ -269,42 +295,40 @@
                                 </li>
                             @endcanany
 
-                            @canany(['service-create','service-index'])
-                            <li class="nav-item {{ \App\Facades\ViewHelper::checkServiceURL()?'menu-open':'' }}">
-                                <a href="#" class="nav-link {{ \App\Facades\ViewHelper::checkServiceURL()?'active':'' }}">
+                            @canany(['service-create','service-index','serviceSubCategory-create','serviceSubCategory-index','serviceCategory-create','serviceCategory-index'])
+                            <li class="nav-item {{ request()->is('admin/service*') || request()->is('admin/serviceSubCategory*') || request()->is('admin/dev/serviceCategory*') ?'menu-open':'' }}">
+                                <a href="#" class="nav-link {{ request()->is('admin/service*') || request()->is('admin/serviceSubCategory*') || request()->is('admin/dev/serviceCategory*') ?'active':'' }}">
                                     <i class="nav-icon fas marine fa-baby-carriage"></i>
                                     <p>Services
                                         <i class="fas marine fa-angle-left right"></i>
                                     </p>
                                 </a>
-                                @if(isset($_service_categories) && $_service_categories->count() > 0)
                                 <ul class="nav nav-treeview">
-                                    @foreach($_service_categories as $serviceCategory)
+                                    @canany(['serviceCategory-create','serviceCategory-index'])
                                     <li class="nav-item">
-                                        <a href="{{route('admin.service.index',$serviceCategory->slug)}}" class="nav-link {{request()->is('admin/'.$serviceCategory->slug.'/service*')?'active':''}}">
-                                            <i class="nav-icon fas marine fa-baby"></i>
-                                            <p>
-                                               {{ $serviceCategory->title }}
-                                            </p>
+                                        <a href="{{route('admin.serviceCategory.index')}}" class="nav-link {{request()->is('admin/dev/serviceCategory*')?'active':''}}">
+                                            <i class="nav-icon fas marine fa-server"></i>
+                                            <p>Service Categories</p>
                                         </a>
-                                        @if(isset($serviceCategory->child) && $serviceCategory->child->count() > 0)
-                                            <ul class="nav nav-treeview">
-                                                @foreach($serviceCategory->child as $serviceCat)
-                                                    <li class="nav-item">
-                                                        <a href="{{route('admin.service.index',$serviceCat->slug)}}" class="nav-link {{request()->is('admin/'.$serviceCat->slug.'/service*')?'active':''}}">
-                                                            <i class="nav-icon fas marine fa-baby"></i>
-                                                            <p>
-                                                                {{ $serviceCat->title }}
-                                                            </p>
-                                                        </a>
-                                                    </li>
-                                                @endforeach
-                                            </ul>
-                                        @endif
                                     </li>
-                                    @endforeach
+                                    @endcanany
+                                    @canany(['serviceSubCategory-create','serviceSubCategory-index'])
+                                    <li class="nav-item">
+                                        <a href="{{route('admin.serviceSubCategory.index')}}" class="nav-link {{request()->is('admin/serviceSubCategory*')?'active':''}}">
+                                            <i class="nav-icon fas marine fa-sitemap"></i>
+                                            <p>Service Sub Categories</p>
+                                        </a>
+                                    </li>
+                                    @endcanany
+                                    @canany(['service-create','service-index'])
+                                    <li class="nav-item">
+                                        <a href="{{route('admin.service.index')}}" class="nav-link {{request()->is('admin/service*') && !request()->is('admin/serviceSubCategory*') && !request()->is('admin/dev/serviceCategory*') ?'active':''}}">
+                                            <i class="nav-icon fas marine fa-baby"></i>
+                                            <p>Services</p>
+                                        </a>
+                                    </li>
+                                    @endcanany
                                 </ul>
-                                @endif
                             </li>
                             @endcanany
 

@@ -52,6 +52,41 @@
                             </div>
                             <!-- /.card-header -->
                             <div class="card-body">
+                                <!-- Filter Section -->
+                                <form method="GET" action="{{ route($_base_route . '.index') }}" class="mb-3">
+                                    <div class="row align-items-end">
+                                        <div class="col-md-4">
+                                            <label>Filter by Resource Type</label>
+                                            <select name="type_id" class="form-control" onchange="this.form.submit()">
+                                                <option value="">-- All Types --</option>
+                                                @foreach($data['resource_types'] as $typeId => $typeTitle)
+                                                    <option value="{{ $typeId }}" {{ (string)$data['selected_type'] === (string)$typeId ? 'selected' : '' }}>
+                                                        {{ $typeTitle }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                        @if(isset($data['sub_types']) && count($data['sub_types']) > 0)
+                                            <div class="col-md-4">
+                                                <label>Filter by Sub Type</label>
+                                                <select name="sub_type_id" class="form-control" onchange="this.form.submit()">
+                                                    <option value="">-- All Sub Types --</option>
+                                                    @foreach($data['sub_types'] as $sId => $sTitle)
+                                                        <option value="{{ $sId }}" {{ (string)$data['selected_sub_type'] === (string)$sId ? 'selected' : '' }}>
+                                                            {{ $sTitle }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                        @endif
+                                        @if($data['selected_type'] || $data['selected_sub_type'])
+                                            <div class="col-md-2">
+                                                <a href="{{ route($_base_route . '.index') }}" class="btn btn-secondary">Clear Filter</a>
+                                            </div>
+                                        @endif
+                                    </div>
+                                </form>
+
                                 @include('admin.layout.pagination')
                                 {!!Form::open ([
                                     'url' => route($_base_route.'.sort'),
@@ -64,8 +99,8 @@
                                             <th></th>
                                             <th>SN</th>
                                             <th>Title</th>
-                                            <th>SubTitle</th>
                                             <th>ResourceType</th>
+                                            <th>SubType</th>
                                             <th>FileLink</th>
                                             <th>Status</th>
                                             <th>Action</th>
@@ -84,14 +119,21 @@
                                                 </td>
                                                 <td>{{$key+1}}</td>
                                                 <td>
-                                                  {{$row->title}}
+                                                  <strong>{{$row->title}}</strong>
+                                                  @if($row->sub_title)<br><small class="text-muted">{{$row->sub_title}}</small>@endif
                                                 </td>
-                                                <td>{{$row->sub_title}}</td>
-                                                <td>{{$row->parent->title ?? "Not Specified"}}</td>
+                                                <td><span class="badge badge-info">{{$row->resourceType->title ?? ($row->parent->title ?? "Not Specified")}}</span></td>
+                                                <td>
+                                                    @if($row->subType)
+                                                        <span class="badge badge-secondary">{{$row->subType->title}}</span>
+                                                    @else
+                                                        <span class="badge badge-light text-muted">Direct</span>
+                                                    @endif
+                                                </td>
                                                 <td>
                                                     <a href="{{$row->type == 'link'? $row->file : \App\Facades\ViewHelper::getImagePath('resource',@$row->file) }}" target="_blank"
-                                                       class="red text-sm">
-                                                        <i class="fas fa-download mr-1"></i>
+                                                       class="red text-sm btn btn-xs btn-outline-info">
+                                                        <i class="fas fa-download mr-1"></i> View/Download
                                                     </a>
                                                 </td>
                                                 <td>
@@ -122,8 +164,8 @@
                                         <th></th>
                                         <th>SN</th>
                                         <th>Title</th>
-                                        <th>SubTitle</th>
                                         <th>ResourceType</th>
+                                        <th>SubType</th>
                                         <th>FileLink</th>
                                         <th>Status</th>
                                         <th>Action</th>

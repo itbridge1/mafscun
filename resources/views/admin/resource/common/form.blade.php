@@ -2,12 +2,29 @@
     <div class="row">
         <div class="col-md-6">
             <div class="form-group">
-                <label for="name">ResourceType *</label>
+                <label for="resource_type_id">ResourceType *</label>
                 {!! Form::select('resource_type_id',$data['resource_types'], null,[
                       'class'=> $errors->has('resource_type_id')?'form-control is-invalid':'form-control',
+                      'id' => 'resource_type_select',
                       'placeholder'=>'--SELECT RESOURCE TYPE--',
                       ]) !!}
                 @error('resource_type_id')
+                <span class="help-block invalid-feedback">
+                        <strong> {{ $message }} </strong>
+                    </span>
+                @enderror
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="resource_sub_type_id">Resource SubType <small class="text-muted">(Optional)</small></label>
+                {!! Form::select('resource_sub_type_id', $data['resource_sub_types'] ?? [], null,[
+                      'class'=> $errors->has('resource_sub_type_id')?'form-control is-invalid':'form-control',
+                      'id' => 'resource_sub_type_select',
+                      'placeholder'=>'-- None (Direct under Type) --',
+                      ]) !!}
+                @error('resource_sub_type_id')
                 <span class="help-block invalid-feedback">
                         <strong> {{ $message }} </strong>
                     </span>
@@ -182,6 +199,32 @@
                     $('.file').show();
                     $('.link').hide();
                 }
+            }
+
+            var selectedSubId = "{{ old('resource_sub_type_id', @$data['row']->resource_sub_type_id) }}";
+            $('#resource_type_select').on('change', function() {
+                var typeId = $(this).val();
+                var $subSelect = $('#resource_sub_type_select');
+                $subSelect.empty().append('<option value="">-- None (Direct under Type) --</option>');
+                if (typeId) {
+                    $.ajax({
+                        url: "{{ url('admin/resourceSubType/by-type') }}/" + typeId,
+                        type: 'GET',
+                        dataType: 'json',
+                        success: function(data) {
+                            if (data && data.length > 0) {
+                                $.each(data, function(index, item) {
+                                    var isSelected = (String(item.id) === String(selectedSubId)) ? 'selected' : '';
+                                    $subSelect.append('<option value="' + item.id + '" ' + isSelected + '>' + item.title + '</option>');
+                                });
+                            }
+                        }
+                    });
+                }
+            });
+
+            if ($('#resource_type_select').val() && $('#resource_sub_type_select option').length <= 1) {
+                $('#resource_type_select').trigger('change');
             }
         })
     </script>

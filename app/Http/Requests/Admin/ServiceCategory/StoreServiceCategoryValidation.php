@@ -33,7 +33,7 @@ class StoreServiceCategoryValidation extends FormRequest
             'title'         => ['required', 'max:155', 'unique:service_categories'],
             'slug'          => ['required', 'max:155', 'unique:service_categories'],
             'sub_title'     => ['nullable', 'max:155',],
-            'main_image'    => ['file', 'max:2048', 'mimes:jpg,png,jpeg,gif,tif,bmp','required'],
+            'main_image'    => ['nullable', 'file', 'max:2048', 'mimes:jpg,png,jpeg,gif,tif,bmp'],
             'parent_id'     => ['nullable','numeric'],
             'description'   => ['nullable'],
             'status'        => ['boolean', 'nullable'],

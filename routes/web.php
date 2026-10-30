@@ -161,9 +161,15 @@ Route::group(['prefix' => 'admin/', 'as' => 'admin.', 'middleware'=>['auth', 'ro
         ->name('notice.sort');
     Route::resource('notice',             \App\Http\Controllers\Admin\NoticeController::class);
 
-    Route::post('{slug}/service/sort',            [\App\Http\Controllers\Admin\ServiceController::class, 'sort'])
+    Route::post('serviceSubCategory/sort', [\App\Http\Controllers\Admin\ServiceSubCategoryController::class, 'sort'])
+        ->name('serviceSubCategory.sort');
+    Route::get('serviceSubCategory/by-category/{categoryId}', [\App\Http\Controllers\Admin\ServiceSubCategoryController::class, 'byCategory'])
+        ->name('serviceSubCategory.byCategory');
+    Route::resource('serviceSubCategory', \App\Http\Controllers\Admin\ServiceSubCategoryController::class);
+
+    Route::post('service/sort', [\App\Http\Controllers\Admin\ServiceController::class, 'sort'])
         ->name('service.sort');
-    Route::resource('{slug}/service',             \App\Http\Controllers\Admin\ServiceController::class);
+    Route::resource('service', \App\Http\Controllers\Admin\ServiceController::class);
 
     Route::post('{slug}/team/sort',            [\App\Http\Controllers\Admin\TeamController::class, 'sort'])
         ->name('team.sort');
@@ -172,6 +178,12 @@ Route::group(['prefix' => 'admin/', 'as' => 'admin.', 'middleware'=>['auth', 'ro
     Route::post('resource/sort',            [\App\Http\Controllers\Admin\ResourceController::class, 'sort'])
         ->name('resource.sort');
     Route::resource('resource',             \App\Http\Controllers\Admin\ResourceController::class);
+
+    Route::post('resourceSubType/sort', [\App\Http\Controllers\Admin\ResourceSubTypeController::class, 'sort'])
+        ->name('resourceSubType.sort');
+    Route::get('resourceSubType/by-type/{typeId}', [\App\Http\Controllers\Admin\ResourceSubTypeController::class, 'byType'])
+        ->name('resourceSubType.byType');
+    Route::resource('resourceSubType', \App\Http\Controllers\Admin\ResourceSubTypeController::class);
 
     Route::post('gallery/sort',            [\App\Http\Controllers\Admin\GalleryController::class, 'sort'])
         ->name('gallery.sort');

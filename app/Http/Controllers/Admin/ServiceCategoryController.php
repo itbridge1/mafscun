@@ -32,7 +32,7 @@ class ServiceCategoryController extends BaseController
     {
         $data = [];
         $data['rows'] = $this->model
-            ->whereNull('parent_id')
+            ->withCount(['subCategories', 'services'])
             ->rank()
             ->paginated();
 
@@ -70,7 +70,7 @@ class ServiceCategoryController extends BaseController
 
         $serviceCategory = $this->model->create($data);
 
-        $request->session()->flash('success_message', $this->panel.' '.$serviceCategory->name. ' added Successfully');
+        $request->session()->flash('success_message', $this->panel.' '.$serviceCategory->title. ' added Successfully');
         return redirect()->route($this->base_route.'.index');
     }
 
@@ -129,7 +129,7 @@ class ServiceCategoryController extends BaseController
         }
         $row->update($data);
 
-        $request->session()->flash('success_message',$this->panel.' '. $row->name . ' updated Successfully');
+        $request->session()->flash('success_message',$this->panel.' '. $row->title . ' updated Successfully');
         return redirect()->route($this->base_route.'.index');
     }
 

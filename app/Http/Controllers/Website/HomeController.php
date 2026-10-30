@@ -291,32 +291,76 @@ $data['_serviceslist'] = ServiceCategory::select('title','slug','photo')->active
 
     public function serviceDetail($slug)
     {
-        $_service = ServiceCategory::with(['children'=> function ($q) {
-                $q->active()
-                ->rank()
-                ->get();
-        }])->where('slug', $slug)
-        ->active()->first();
-        $this->resourceExist($_service);
+        // 1. Try finding ServiceCategory
+        $serviceCategory = ServiceCategory::with([
+            'subCategories' => function ($q) {
+                $q->active()->rank()->with(['services' => function ($sq) {
+                    $sq->active()->rank();
+                }]);
+            },
+            'directServices' => function ($q) {
+                $q->active()->rank();
+            },
+            'children' => function ($q) {
+                $q->active()->rank();
+            }
+        ])->where('slug', $slug)->active()->first();
 
-        return view($this->loadCommonDataToView('website.services.index'),compact('_service'));
+        if ($serviceCategory) {
+            $_service = $serviceCategory;
+            if ($serviceCategory->subCategories->count() > 0) {
+                $_service->children = $serviceCategory->subCategories;
+            } elseif ($serviceCategory->directServices->count() > 0) {
+                $_service->children = $serviceCategory->directServices;
+            }
+            return view($this->loadCommonDataToView('website.services.index'), compact('_service'));
+        }
+
+        // 2. Try finding ServiceSubCategory
+        $serviceSubCategory = \App\Models\ServiceSubCategory::with([
+            'category',
+            'services' => function ($q) {
+                $q->active()->rank();
+            }
+        ])->where('slug', $slug)->active()->first();
+
+        if ($serviceSubCategory) {
+            $_service = $serviceSubCategory;
+            $_service->children = $serviceSubCategory->services;
+            return view($this->loadCommonDataToView('website.services.index'), compact('_service'));
+        }
+
+        // 3. Try finding Service
+        $serviceItem = \App\Models\Service::with(['category', 'subCategory'])
+            ->where('slug', $slug)->active()->first();
+
+        if ($serviceItem) {
+            $_service = $serviceItem;
+            return view($this->loadCommonDataToView('website.services.index'), compact('_service'));
+        }
+
+        abort(404);
     }
 
     public function resources(Request $request)
     {
         $_resourceTypes = ResourceType::active()->pluck('title','id');
         $resourceType = $request->input('filter_resource_type');
+        $filterSubType = $request->input('filter_sub_type');
         $filterTitle = trim((string) $request->input('filter_title', ''));
 
-        $_resources = Resource::with('parent:id,title')->active()
+        $_resources = Resource::with(['parent:id,title', 'subType:id,title'])->active()
             ->when($resourceType !== null && $resourceType !== '', function ($query) use ($resourceType) {
                 $query->where('resource_type_id', $resourceType);
+            })
+            ->when($filterSubType !== null && $filterSubType !== '', function ($query) use ($filterSubType) {
+                $query->where('resource_sub_type_id', $filterSubType);
             })
             ->when($filterTitle !== '', function ($query) use ($filterTitle) {
                 $query->where('title', 'like', '%' . $filterTitle . '%');
             })
             ->latest()->paginate(20)
-            ->appends($request->only(['filter_resource_type', 'filter_title']));
+            ->appends($request->only(['filter_resource_type', 'filter_sub_type', 'filter_title']));
 
         return view($this->loadCommonDataToView('website.resource.index'),compact('_resources','_resourceTypes'));
     }

@@ -3,51 +3,41 @@
 namespace App\Http\Requests\Admin\Service;
 
 use App\Facades\ViewHelper;
-use App\Models\Category;
-use App\Models\ServiceCategory;
+use App\Models\Service;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Password;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
-use Spatie\Permission\Models\Role;
 
 class StoreServiceValidation extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     *
-     * @return bool
-     */
-//    public function authorize()
-//    {
-//        return true;
-//    }
-
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, mixed>
-     */
     public function rules()
     {
         return [
-            'title'         => ['required', 'max:155', 'unique:service_categories'],
-            'slug'          => ['required', 'max:155', 'unique:service_categories'],
-            'sub_title'     => ['nullable', 'max:155',],
-            'main_image'    => ['file', 'max:2048', 'mimes:jpg,png,jpeg,gif,tif,bmp','required'],
-            'description'   => ['nullable'],
-            'status'        => ['boolean', 'nullable'],
-            'rank'          => ['required', 'numeric','gt:0'],
+            'service_category_id'     => ['required', 'integer', 'exists:service_categories,id'],
+            'service_sub_category_id' => ['nullable', 'integer', 'exists:service_sub_categories,id'],
+            'title'                   => ['required', 'max:155'],
+            'slug'                    => ['required', 'max:155', 'unique:services,slug'],
+            'sub_title'               => ['nullable', 'max:155'],
+            'main_image'              => ['nullable', 'file', 'max:2048', 'mimes:jpg,png,jpeg,gif,tif,bmp'],
+            'description'             => ['nullable'],
+            'status'                  => ['boolean', 'nullable'],
+            'rank'                    => ['required', 'numeric', 'gt:0'],
         ];
     }
 
     public function prepareForValidation()
     {
-        $this->merge([
-            'slug' => Str::slug($this->title),
-            'rank' => ViewHelper::getMaxRank(ServiceCategory::class)
+        $slug = Str::slug($this->title);
+        if (!$slug) {
+            $slug = 'service-' . time();
+        }
+        if (Service::where('slug', $slug)->exists()) {
+            $slug .= '-' . time();
+        }
 
+        $this->merge([
+            'slug'   => $slug,
+            'rank'   => ViewHelper::getMaxRank(Service::class),
+            'status' => $this->status ? 1 : 0,
         ]);
     }
-
 }

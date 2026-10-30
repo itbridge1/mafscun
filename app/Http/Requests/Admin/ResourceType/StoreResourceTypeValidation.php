@@ -27,8 +27,8 @@ class StoreResourceTypeValidation extends FormRequest
     public function rules()
     {
         return [
-            'title'         => ['required', 'max:155', 'unique:about_us'],
-            'slug'          => ['required', 'max:155', 'unique:about_us'],
+            'title'         => ['required', 'max:155', 'unique:resource_types'],
+            'slug'          => ['required', 'max:155', 'unique:resource_types'],
             'description'   => ['nullable'],
             'status'        => ['boolean', 'nullable'],
             'rank'          => ['required', 'numeric','gt:0'],

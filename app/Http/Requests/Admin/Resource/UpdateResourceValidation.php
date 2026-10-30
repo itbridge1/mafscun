@@ -38,6 +38,7 @@ class UpdateResourceValidation extends FormRequest
             'title'                 => ['required', 'max:155', 'unique:resources,title,'.$recordId],
             'slug'                  => ['required', 'max:155', 'unique:resources,slug,'.$recordId],
             'resource_type_id'      => ['numeric', 'nullable'],
+            'resource_sub_type_id'  => ['numeric', 'nullable', 'exists:resource_sub_types,id'],
             'type'                  => ['required', 'in:link,file'],
             'sub_title'             => ['nullable','max:191', 'string'],
             'status'                => ['boolean', 'nullable'],

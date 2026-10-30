@@ -12,6 +12,7 @@ use App\Models\News;
 use App\Models\Notice;
 use App\Models\ServiceCategory;
 use App\Models\SiteSetting;
+use App\Models\ResourceType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\View;
 
@@ -19,17 +20,38 @@ class BaseController extends Controller
 {
     protected function loadCommonDataToView($view_path)
     {
-        $serviceCategories = ServiceCategory::whereNull('parent_id')->select('title','slug','id')->with(['children'=> function ($q) {
-            $q->where('status',1)
-                ->rank()
-                ->select('title','slug','parent_id','id');
-        }])
-            ->rank()->active()->select('slug','title','id')->get();
+        $serviceCategories = ServiceCategory::select('id', 'title', 'slug')
+            ->with([
+                'subCategories' => function ($q) {
+                    $q->where('status', 1)->rank()
+                      ->select('id', 'service_category_id', 'title', 'slug')
+                      ->with(['services' => function ($sq) {
+                          $sq->where('status', 1)->rank()
+                            ->select('id', 'service_category_id', 'service_sub_category_id', 'title', 'slug');
+                      }]);
+                },
+                'directServices' => function ($q) {
+                    $q->where('status', 1)->rank()
+                      ->select('id', 'service_category_id', 'service_sub_category_id', 'title', 'slug');
+                },
+            ])
+            ->rank()->active()->get();
+
+        $resourceTypes = ResourceType::select('id', 'title', 'slug')
+            ->with([
+                'subTypes' => function ($q) {
+                    $q->where('status', 1)->rank()
+                      ->select('id', 'resource_type_id', 'title', 'slug');
+                },
+            ])
+            ->rank()->active()->get();
+
         $hrmCollection = Hrm::whereNull('parent_id')->rank()->select('slug','title')->get();
         $siteSetting = SiteSetting::first();
         //sending common variables to all path extending BaseController
-        View::composer($view_path, function ($view) use ($serviceCategories,$hrmCollection,$siteSetting) {
+        View::composer($view_path, function ($view) use ($serviceCategories,$hrmCollection,$siteSetting,$resourceTypes) {
             $view->with('_service_categories', $serviceCategories);
+            $view->with('_resource_types', $resourceTypes);
             $view->with('_hrm', $hrmCollection);
             $view->with('_site_setting', $siteSetting);
             $view->with('_dock_notices', Notice::active()->latest()->where('is_career', 0)->limit(4)->get());

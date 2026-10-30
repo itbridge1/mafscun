@@ -2,29 +2,77 @@
     <div class="row">
         <div class="col-md-6">
             <div class="form-group">
-                <label for="name">Title*</label>
-                {!! Form::text('title', null,[
-                      'class'=> $errors->has('title')?'form-control is-invalid':'form-control',
-                      'placeholder'=>'Eg.Introduction',
-                      ]) !!}
-                @error('title')
-                    <span class="help-block invalid-feedback">
-                        <strong> {{ $message }} </strong>
-                    </span>
+                <label for="service_category_id">Service Category*</label>
+                {!! Form::select('service_category_id', $data['categories'] ?? [], $data['selected_category'] ?? null, [
+                    'class' => $errors->has('service_category_id') ? 'form-control is-invalid' : 'form-control',
+                    'id' => 'service_category_select',
+                    'placeholder' => '-- SELECT CATEGORY --',
+                    'required' => 'required'
+                ]) !!}
+                @error('service_category_id')
+                <span class="help-block invalid-feedback">
+                    <strong>{{ $message }}</strong>
+                </span>
                 @enderror
             </div>
         </div>
 
         <div class="col-md-6">
             <div class="form-group">
-                <label for="title">Sub Title</label>
-                {!! Form::text('sub_title', null,[
-                     'class'=> $errors->has('sub_title')?'form-control is-invalid':'form-control',
-                     'placeholder'=>'Eg. Introduction 1.1',
+                <label for="service_sub_category_id">Service Sub Category <small class="text-muted">(Optional - leave blank if direct under category)</small></label>
+                {!! Form::select('service_sub_category_id', $data['subCategories'] ?? [], null, [
+                    'class' => $errors->has('service_sub_category_id') ? 'form-control is-invalid' : 'form-control',
+                    'id' => 'service_sub_category_select',
+                    'placeholder' => '-- None (Direct Service under Category) --',
+                ]) !!}
+                @error('service_sub_category_id')
+                <span class="help-block invalid-feedback">
+                    <strong>{{ $message }}</strong>
+                </span>
+                @enderror
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="title">Service Title*</label>
+                {!! Form::text('title', null, [
+                    'class' => $errors->has('title') ? 'form-control is-invalid' : 'form-control',
+                    'placeholder' => 'Eg. Daily Savings / Agricultural Loan',
+                    'required' => 'required'
+                ]) !!}
+                @error('title')
+                <span class="help-block invalid-feedback">
+                    <strong>{{ $message }}</strong>
+                </span>
+                @enderror
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="sub_title">Sub Title</label>
+                {!! Form::text('sub_title', null, [
+                    'class' => $errors->has('sub_title') ? 'form-control is-invalid' : 'form-control',
+                    'placeholder' => 'Eg. Flexible deposit options',
                 ]) !!}
                 @error('sub_title')
                 <span class="help-block invalid-feedback">
-                     <strong> {{ $message }} </strong>
+                    <strong>{{ $message }}</strong>
+                </span>
+                @enderror
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="status">Status</label>
+                {!! Form::select('status', ['1' => 'Active', '0' => 'InActive'], null, [
+                    'class' => $errors->has('status') ? 'form-control is-invalid' : 'form-control',
+                ]) !!}
+                @error('status')
+                <span class="help-block invalid-feedback">
+                    <strong>{{ $message }}</strong>
                 </span>
                 @enderror
             </div>
@@ -33,28 +81,28 @@
         <div class="col-md-12">
             <div class="card card-gray-dark">
                 <div class="card-header">
-                    Photo
+                    Photo (Optional)
                 </div>
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-6">
                             <label for="photo_upload">Upload Photo</label>
-                            {!! Form::file('main_image',[
-                                'class'=> $errors->has('main_image')?'form-control btn btn-sm is-invalid':'form-control btn btn-sm',
-                                'id'=>'photo',
-                                'onchange'=>"showPreview(event);",
-                                'accept'=>'image/png, image/gif, image/jpeg'
-                             ]) !!}
+                            {!! Form::file('main_image', [
+                                'class' => $errors->has('main_image') ? 'form-control btn btn-sm is-invalid' : 'form-control btn btn-sm',
+                                'id' => 'photo',
+                                'onchange' => "showPreview(event);",
+                                'accept' => 'image/png, image/gif, image/jpeg'
+                            ]) !!}
                             @error('main_image')
-                                <span class="help-block invalid-feedback">
-                                    <strong> {{ $message }} </strong>
-                                </span>
+                            <span class="help-block invalid-feedback">
+                                <strong>{{ $message }}</strong>
+                            </span>
                             @enderror
                         </div>
                         <div class="col-md-6">
                             <label for="photo">Existing Image</label>
                             <div>
-                               <img width="150" height="150" src="{{ ViewHelper::getImagePath(@$_folder,@$data['row']->photo) }}" class="img-fluid" id="file-ip-1-preview">
+                                <img width="150" height="150" src="{{ \App\Facades\ViewHelper::getImagePath(@$_folder, @$data['row']->photo) }}" class="img-fluid" id="file-ip-1-preview">
                             </div>
                         </div>
                     </div>
@@ -64,87 +112,66 @@
 
         <div class="col-md-12">
             <div class="form-group">
-                <label for="title">Description</label>
-                {!! Form::textarea('description', null,[
-                     'class'=> $errors->has('description')?'form-control summernote is-invalid':'form-control summernote',
-                     'placeholder'=>'Eg. Description',
+                <label for="description">Description</label>
+                {!! Form::textarea('description', null, [
+                    'class' => $errors->has('description') ? 'form-control summernote is-invalid' : 'form-control summernote',
+                    'placeholder' => 'Detailed description of the service',
                 ]) !!}
                 @error('description')
                 <span class="help-block invalid-feedback">
-                     <strong> {{ $message }} </strong>
+                    <strong>{{ $message }}</strong>
                 </span>
                 @enderror
             </div>
         </div>
-
-        <div class="col-md-6">
-            <div class="form-group">
-                <label for="title">Status</label>
-                {!! Form::select('status',['1' => 'Active', '0' => 'InActive'], null,[
-                     'class'=> $errors->has('status')?'form-control is-invalid':'form-control',
-
-                ]) !!}
-                @error('status')
-                <span class="help-block invalid-feedback">
-                     <strong> {{ $message }} </strong>
-                </span>
-                @enderror
-            </div>
-        </div>
-
     </div>
 </div>
 <!-- /.card-body -->
 <div class="card-footer">
-    <button type="submit" class="btn btn-primary">{{$button}}</button>
+    <button type="submit" class="btn btn-primary">{{ $button }}</button>
 </div>
 
 @section('formJs')
     <script>
-        function showPreview(event){
-            if(event.target.files.length > 0){
+        function showPreview(event) {
+            if (event.target.files.length > 0) {
                 var src = URL.createObjectURL(event.target.files[0]);
                 var preview = document.getElementById("file-ip-1-preview");
-                var photo = document.getElementById("photo");
                 preview.src = src;
-                photo.value=src;
                 preview.style.display = "block";
-
             }
         }
 
-        function showSignaturePreview(event){
-            if(event.target.files.length > 0){
-                var src = URL.createObjectURL(event.target.files[0]);
-                var preview = document.getElementById("file-ip-2-preview");
-                var photo = document.getElementById("signature");
-                preview.src = src;
-                photo.value=src;
-                preview.style.display = "block";
+        $(document).ready(function() {
+            var selectedSubId = "{{ old('service_sub_category_id', @$data['row']->service_sub_category_id) }}";
 
+            $('#service_category_select').on('change', function() {
+                var categoryId = $(this).val();
+                var $subSelect = $('#service_sub_category_select');
+
+                $subSelect.empty().append('<option value="">-- None (Direct Service under Category) --</option>');
+
+                if (categoryId) {
+                    $.ajax({
+                        url: "{{ url('admin/serviceSubCategory/by-category') }}/" + categoryId,
+                        type: 'GET',
+                        dataType: 'json',
+                        success: function(data) {
+                            if (data && data.length > 0) {
+                                $.each(data, function(index, subCat) {
+                                    var isSelected = (String(subCat.id) === String(selectedSubId)) ? 'selected' : '';
+                                    $subSelect.append('<option value="' + subCat.id + '" ' + isSelected + '>' + subCat.title + '</option>');
+                                });
+                            }
+                        }
+                    });
+                }
+            });
+
+            // Trigger on load if category selected and subcategories empty
+            if ($('#service_category_select').val() && $('#service_sub_category_select option').length <= 1) {
+                $('#service_category_select').trigger('change');
             }
-        }
-    </script>
-    <script>
-        const togglePassword = document.querySelector('#togglePassword');
-        const toggleConfrimPassword = document.querySelector('#toggleConfirmPassword');
-
-        const password = document.querySelector('#password');
-        const confirm_password = document.querySelector('#confirm-password');
-
-        togglePassword.addEventListener('click', function (e) {
-            // toggle the type attribute
-            const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
-            password.setAttribute('type', type);
-            // toggle the eye slash icon
-            this.classList.toggle('fa-eye-slash');
-        });
-
-        toggleConfrimPassword.addEventListener('click', function (e) {
-            const s = confirm_password.getAttribute('type') === 'password' ? 'text' : 'password';
-            confirm_password.setAttribute('type', s);
-            // toggle the eye slash icon
-            this.classList.toggle('fa-eye-slash');
         });
     </script>
 @endsection

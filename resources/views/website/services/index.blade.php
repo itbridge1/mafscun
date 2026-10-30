@@ -5,7 +5,7 @@
     @include('website.common.meta', [
     '_title' => isset($_service) ? $_service->title : 'Services',
     '_detail' => isset($_service) ? strip_tags($_service->description) : ('Explore the services offered by ' . ($_site_setting->title ?? 'MAFSCUN') . '.'),
-    '_folder' => 'serviceCategory',
+    '_folder' => isset($_service) ? ($_service->photo_folder ?? 'serviceCategory') : 'serviceCategory',
     '_photo' => isset($_service) ? $_service->photo : null,
 ])
 @endsection
@@ -330,7 +330,7 @@
                     <div class="col-lg-4">
                         <div class="p-4 pr-lg-5">
                             <div class="service-overview-img-wrapper" style="border-radius: 12px; overflow: hidden; box-shadow: 0 8px 25px rgba(0, 0, 0, 0.05); border: 1px solid var(--brand-border, #ddf3e8);">
-                                <img src="{{ \App\Facades\ViewHelper::getImagePath('serviceCategory', $_service->photo) }}"
+                                <img src="{{ \App\Facades\ViewHelper::getImagePath($_service->photo_folder ?? 'serviceCategory', $_service->photo) }}"
                                      class="img-fluid w-100" 
                                      alt="{{ $_service->title }}"
                                      style="display: block; cursor: zoom-in;">
@@ -384,7 +384,7 @@
                                         <div class="subservice-desc-wrapper clearfix">
                                             @if($_child->photo)
                                                 <div class="subservice-featured-img-wrapper">
-                                                    <img src="{{ \App\Facades\ViewHelper::getImagePath('serviceCategory', $_child->photo) }}"
+                                                    <img src="{{ \App\Facades\ViewHelper::getImagePath($_child->photo_folder ?? 'serviceCategory', $_child->photo) }}"
                                                          class="img-fluid" 
                                                          alt="{{ $_child->title }}">
                                                 </div>
@@ -435,7 +435,7 @@
                             <div class="card-body accordion-body p-3">
                                 @if($_child->photo)
                                     <div class="text-center mb-3">
-                                        <img src="{{ \App\Facades\ViewHelper::getImagePath('serviceCategory', $_child->photo) }}"
+                                        <img src="{{ \App\Facades\ViewHelper::getImagePath($_child->photo_folder ?? 'serviceCategory', $_child->photo) }}"
                                              class="img-fluid rounded" 
                                              style="max-height: 200px; object-fit: cover;"
                                              alt="{{ $_child->title }}">
