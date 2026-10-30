@@ -522,7 +522,7 @@ class ImportMafscunMirror extends Command
     {
         $settings = SiteSetting::first();
         if (!$settings) return 0;
-        $settings->statistics_text = 'बचतको प्रकारहरू | Savings Types';
+        $settings->statistics_text = 'चालू आर्थिक वर्षको मुख्य वित्तीय परिसूचकहरू | Key Financial Indicators of Current Fiscal Year';
         $settings->save();
         $products = [
             ['नियमित बचत', 'न्यूनतम मौज्दात: रु. १,०००–२०,००० · ब्याजदर: १–३.०%'],

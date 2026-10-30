@@ -29,13 +29,18 @@ class UpdateAffiliationValidation extends FormRequest
      */
     public function rules()
     {
+        $recordId = $this->route('affiliation') ?? $this->id;
+        if (is_object($recordId)) {
+            $recordId = $recordId->id;
+        }
+
         return [
-            'title'         => ['required', 'max:155', 'unique:affiliations,title,'.$this->id],
-            'slug'          => ['required', 'max:155', 'unique:affiliations,slug,'.$this->id],
+            'title'         => ['required', 'max:155', 'unique:affiliations,title,'.$recordId],
+            'slug'          => ['required', 'max:155', 'unique:affiliations,slug,'.$recordId],
             'year'          => ['required' ],
             'link'          => ['nullable' ],
             'rank'          => ['nullable','numeric','gt:0' ],
-            'main_image'    => ['required','file', 'max:2048', 'mimes:jpg,png,jpeg,gif,tif,bmp'],
+            'main_image'    => ['nullable','file', 'max:2048', 'mimes:jpg,png,jpeg,gif,tif,bmp'],
             'status'        => ['boolean', 'nullable'],
         ];
     }

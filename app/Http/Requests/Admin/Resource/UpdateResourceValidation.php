@@ -27,16 +27,23 @@ class UpdateResourceValidation extends FormRequest
      */
     public function rules()
     {
+        $recordId = $this->route('resource') ?? $this->id;
+        if (is_object($recordId)) {
+            $recordId = $recordId->id;
+        }
+        $existing = $recordId ? \App\Models\Resource::find($recordId) : null;
+        $hasExistingFile = $existing && !empty($existing->file);
+
         return [
-            'title'                 => ['required', 'max:155', 'unique:resources,title,'.$this->id],
-            'slug'                  => ['required', 'max:155', 'unique:resources,slug,'.$this->id],
+            'title'                 => ['required', 'max:155', 'unique:resources,title,'.$recordId],
+            'slug'                  => ['required', 'max:155', 'unique:resources,slug,'.$recordId],
             'resource_type_id'      => ['numeric', 'nullable'],
             'type'                  => ['required', 'in:link,file'],
             'sub_title'             => ['nullable','max:191', 'string'],
             'status'                => ['boolean', 'nullable'],
-            'main_file'             => ['required_if:type,file','file', 'max:16360',],
+            'main_file'             => [$hasExistingFile ? 'nullable' : 'required_if:type,file', 'file', 'max:16360'],
             'link'                  => ['nullable','url'],
-            'description'           => ['nullable',],
+            'description'           => ['nullable'],
         ];
     }
 

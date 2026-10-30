@@ -27,17 +27,22 @@ class UpdateNewsValidation extends FormRequest
      */
     public function rules()
     {
+        $recordId = $this->route('news') ?? $this->id;
+        if (is_object($recordId)) {
+            $recordId = $recordId->id;
+        }
+
         return [
-            'category_id'   =>['nullable', 'numeric'],
+            'category_id'   => ['nullable', 'numeric'],
             'title'         => ['required', 'max:155'],
-            'slug'          => ['required', 'max:155', 'unique:news,slug,'.$this->id],
-            'sub_title'     => ['required', 'max:155', ],
-            'main_image'    => ['file', 'max:2048', 'mimes:jpg,png,jpeg,gif,tif,bmp','required'],
+            'slug'          => ['required', 'max:155', 'unique:news,slug,'.$recordId],
+            'sub_title'     => ['required', 'max:155'],
+            'main_image'    => ['nullable', 'file', 'max:2048', 'mimes:jpg,png,jpeg,gif,tif,bmp'],
             'description'   => ['nullable'],
             'status'        => ['boolean', 'nullable'],
             'view_count'    => ['numeric', 'nullable'],
-            'author'        => ['required', 'max:155',],
-            'location'      => ['nullable', ],
+            'author'        => ['required', 'max:155'],
+            'location'      => ['nullable'],
         ];
     }
 

@@ -986,13 +986,13 @@
     <!--------- Testimonial / Statistics Section --------->
 
 
-    <!--------- Statistics Section / Key Indicators --------->
+    <!--------- Statistics Section / Key Indicators of This Year --------->
     <section class="home-stat-overview-section my-5 py-2" aria-labelledby="stat-overview-title">
         <div class="container-xl">
             <div class="text-center mb-4 pb-2">
-                <span class="statistics-eyebrow">KEY INDICATORS</span>
+                <span class="statistics-eyebrow">CURRENT FISCAL YEAR STATISTICS | चालू आ.व. को वित्तीय स्थिति</span>
                 <h2 id="stat-overview-title" class="home-stat-main-title">
-                    {{ $data['site_setting_title'] ?? 'मुख्य वित्तीय परिसूचकहरू' }}
+                    {{ $data['site_setting_title'] ?? 'चालू आर्थिक वर्षको मुख्य वित्तीय परिसूचकहरू | Key Financial Indicators of Current Fiscal Year' }}
                 </h2>
                 <div class="home-section-accent mx-auto"></div>
             </div>

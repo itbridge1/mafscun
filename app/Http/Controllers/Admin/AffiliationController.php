@@ -123,7 +123,7 @@ class AffiliationController extends BaseController
         }
         $row->update($data);
 
-        $request->session()->flash('success_message',$this->panel.' '. $row->name . ' updated Successfully');
+        $request->session()->flash('success_message',$this->panel.' '. $row->title . ' updated Successfully');
         return redirect()->route($this->base_route.'.index');
     }
 

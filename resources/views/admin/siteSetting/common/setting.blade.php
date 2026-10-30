@@ -134,10 +134,10 @@
 
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label>Statistics Text</label>
+                        <label>Financial Statistics Title (वित्तीय परिसूचक खण्डको शीर्षक)</label>
                         {!! Form::text('statistics_text',null,[
                               'class'=> $errors->has('statistics_text')?'form-control is-invalid':'form-control',
-                              'placeholder'=>"Eg. Type Here",
+                              'placeholder'=>"चालू आर्थिक वर्षको मुख्य वित्तीय परिसूचकहरू | Key Financial Indicators of Current Fiscal Year",
                         ]) !!}
                         @error('statistics_text')
                         <span class="help-block invalid-feedback">
