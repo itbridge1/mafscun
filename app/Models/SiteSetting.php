@@ -41,6 +41,7 @@ class SiteSetting extends Model
         'powered_by_logo',
         'keywords',
         'description',
+        'google_site_verification',
         'view_count',
         'primary_color',
         'secondary_color',

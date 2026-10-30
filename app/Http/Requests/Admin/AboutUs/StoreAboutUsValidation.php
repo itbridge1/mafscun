@@ -36,6 +36,7 @@ class StoreAboutUsValidation extends FormRequest
             'main_image'    => ['file', 'max:2048', 'mimes:jpg,png,jpeg,gif,tif,bmp','required'],
             'description'   => ['nullable'],
             'status'        => ['boolean', 'nullable'],
+            'is_message'    => ['boolean', 'nullable'],
             'rank'          => ['required', 'numeric','gt:0'],
         ];
     }
@@ -44,7 +45,8 @@ class StoreAboutUsValidation extends FormRequest
     {
         $this->merge([
             'slug' => Str::slug($this->title),
-            'rank' => ViewHelper::getMaxRank(AboutUs::class)
+            'rank' => ViewHelper::getMaxRank(AboutUs::class),
+            'is_message' => $this->boolean('is_message') ? 1 : 0,
         ]);
     }
 

@@ -185,7 +185,7 @@
                         @if(isset($siteSetting) && $siteSetting->site_logo && file_exists(public_path('images/siteSetting/' . $siteSetting->site_logo)))
                             <img src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('images/siteSetting/' . $siteSetting->site_logo))) }}" alt="Logo">
                         @endif
-                        <h3>{{ $siteSetting->title ?? 'Bagmati Proscun' }}</h3>
+                        <h3>{{ $siteSetting->title ?? 'MAFSCUN' }}</h3>
                     </div>
                     
                     <div>

@@ -11,10 +11,7 @@
 @endsection
 
 @php
-    $siteTitle = $_site_setting->title ?? 'Cooperative Union';
-    if (str_contains(strtolower($siteTitle), 'bagmati proscun')) {
-        $siteTitle = 'District Cooperative Union';
-    }
+    $siteTitle = $_site_setting->title ?? 'जिल्ला बचत तथा ऋण सहकारी संघ लि., मकवानपुर';
 $footerIntro = !empty($_site_setting->about_1)
     ? \App\Models\AboutUs::find($_site_setting->about_1)
     : null;

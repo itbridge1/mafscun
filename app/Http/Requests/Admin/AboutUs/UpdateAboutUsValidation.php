@@ -34,13 +34,15 @@ class UpdateAboutUsValidation extends FormRequest
             'main_image'    => ['nullable','file', 'max:2048', 'mimes:jpg,png,jpeg,gif,tif,bmp'],
             'description'   => ['nullable'],
             'status'        => ['boolean', 'nullable'],
+            'is_message'    => ['boolean', 'nullable'],
         ];
     }
 
     public function prepareForValidation()
     {
         $this->merge([
-            'slug' => Str::slug($this->title)
+            'slug' => Str::slug($this->title),
+            'is_message' => $this->boolean('is_message') ? 1 : 0,
         ]);
     }
 }

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AGM Verification || Bagmati PROSCUN</title>
+    <title>AGM Verification || {{ $_site_setting->title ?? 'MAFSCUN' }}</title>
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
@@ -125,7 +125,7 @@
         <div class="card">
             <div class="card-header-brand">
                 <h3>AGM Verification</h3>
-                <div class="brand-logo-text">Bagmati PROSCUN</div>
+                <div class="brand-logo-text">{{ $_site_setting->title ?? 'MAFSCUN' }}</div>
             </div>
             <div class="card-body">
                 @if ($data['success'] == 0)

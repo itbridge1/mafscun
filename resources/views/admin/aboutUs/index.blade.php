@@ -65,6 +65,7 @@
                                             <th>SN</th>
                                             <th>Title</th>
                                             <th>SubTitle</th>
+                                            <th>Type</th>
                                             <th>Photo</th>
                                             <th>Status</th>
                                             <th>Action</th>
@@ -86,6 +87,13 @@
                                                   {{$row->title}}
                                                 </td>
                                                 <td>{{$row->sub_title}}</td>
+                                                <td>
+                                                    @if($row->is_message)
+                                                        <span class="badge badge-info"><i class="fas fa-comment-dots mr-1"></i> Message</span>
+                                                    @else
+                                                        <span class="badge badge-secondary"><i class="fas fa-file-alt mr-1"></i> Page</span>
+                                                    @endif
+                                                </td>
                                                 <td>
 												<a class="imageModalOpener"
                                                            data-toggle="modal"

@@ -60,6 +60,7 @@ class UpdateSiteSettingValidation extends FormRequest
             'powered_by_link'           => ['nullable', 'string', 'max:2048'],
             'keywords'                  => ['nullable', 'string'],
             'description'               => ['nullable', 'string'],
+            'google_site_verification'  => ['nullable', 'string', 'max:255'],
             'statisticsData'            => ['nullable', 'array'],
             'statisticsData.*.id'       => ['nullable', 'integer', 'exists:statistics_details,id'],
             'statisticsData.*.name'     => ['required_with:statisticsData.*.value', 'string', 'max:255'],

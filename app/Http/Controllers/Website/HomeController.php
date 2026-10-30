@@ -104,6 +104,13 @@ $data['_serviceslist'] = ServiceCategory::select('title','slug','photo')->active
                 ->where('id', $this->_site_setting->about_1)
                 ->first();
 
+            if (!$data['_aboutUs']) {
+                $data['_aboutUs'] = AboutUs::select('title', 'slug', 'photo','description')
+                    ->where('is_message', 0)
+                    ->active()
+                    ->first();
+            }
+
             $data['_commitmentFromCEO'] = AboutUs::select('title', 'slug', 'photo','description')
                 ->where('id', $this->_site_setting->about_2)
                 ->first();
@@ -111,8 +118,14 @@ $data['_serviceslist'] = ServiceCategory::select('title','slug','photo')->active
             $data['_chairmanVoice'] = AboutUs::select('title', 'slug', 'photo','description')
                 ->where('id', $this->_site_setting->about_3)
                 ->first();
-
         }
+
+        // Messages & Commitment list: any AboutUs with is_message = 1
+        $data['_messages'] = AboutUs::select('title', 'slug', 'photo', 'description', 'sub_title')
+            ->where('is_message', 1)
+            ->active()
+            ->rank()
+            ->get();
         $data['_success_stories'] = SuccessStory::select('name','designation','phone','email','organization',
             'description', 'photo')
             ->active()
@@ -139,22 +152,33 @@ $data['_serviceslist'] = ServiceCategory::select('title','slug','photo')->active
     //aboutUSPage
     public function about()
     {
-        $_aboutUs = AboutUs::where('id',$this->_site_setting->about_1)->first();
-		if($_aboutUs){
-        $_aboutUsList = AboutUs::except( $_aboutUs->id)->rank()->active()->paginate(10);
-		}
+        $_aboutUs = AboutUs::where('id', $this->_site_setting->about_1)->first();
+        if (!$_aboutUs) {
+            $_aboutUs = AboutUs::where('is_message', 0)->active()->first();
+        }
+        $_aboutUsList = AboutUs::where('is_message', 0)
+            ->when($_aboutUs, function($q) use ($_aboutUs) {
+                return $q->where('id', '!=', $_aboutUs->id);
+            })
+            ->rank()
+            ->active()
+            ->paginate(10);
 		
-        return view($this->loadCommonDataToView('website.about.index'),compact('_aboutUs','_aboutUsList'));
+        return view($this->loadCommonDataToView('website.about.index'), compact('_aboutUs', '_aboutUsList'));
     }
 
     //aboutUSPage Detail
     public function aboutDetail($slug)
     {
-        $_aboutUs = AboutUs::where('slug',$slug)->first();
+        $_aboutUs = AboutUs::where('slug', $slug)->first();
         $this->resourceExist($_aboutUs);
-        $_otherAboutUs = AboutUs::where('id', '!=', $_aboutUs->id)->rank()->active()->get();
+        $_otherAboutUs = AboutUs::where('is_message', $_aboutUs->is_message ? 1 : 0)
+            ->where('id', '!=', $_aboutUs->id)
+            ->rank()
+            ->active()
+            ->get();
 
-        return view($this->loadCommonDataToView('website.about.detail'),compact('_aboutUs','_otherAboutUs'));
+        return view($this->loadCommonDataToView('website.about.detail'), compact('_aboutUs', '_otherAboutUs'));
     }
 
     //News Page

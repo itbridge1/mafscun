@@ -1,5 +1,5 @@
 @extends('website.common.layout')
-@section('title', 'Bagmati PROSCUN Home || Home')
+@section('title', 'Home')
 @section('meta')
     @include('website.common.meta', [
         '_title' => $_site_setting->title,
@@ -898,7 +898,7 @@
             </a>
             <a href="{{ route('notices') }}">
                 <span class="quick-link-icon"><i class="fas fa-bullhorn"></i></span>
-                <span><strong>Notices</strong><small>Updates from PROSCUN</small></span>
+                <span><strong>Notices</strong><small>Announcements &amp; updates</small></span>
             </a>
             <a href="{{ route('contact') }}">
                 <span class="quick-link-icon"><i class="fas fa-headset"></i></span>
@@ -933,7 +933,7 @@
             <div class="row d-flex justify-content-between">
                 <!-- About Us Section -->
                 <div class="col-lg-6 about-us-item scroll-reveal">
-                    <h2 class="about-us-title">{{ $data['_aboutUs']->title ?? 'About NEFSCUN' }}</h2>
+                    <h2 class="about-us-title">{{ $data['_aboutUs']->title ?? 'संघको परिचय' }}</h2>
                     <span class="home-section-accent" aria-hidden="true"></span>
                     <p class="about-us-description">
                         {{ \Illuminate\Support\Str::limit(strip_tags($data['_aboutUs']->description), 720) }}
@@ -944,27 +944,41 @@
                 <section class="col-lg-6 home-messages scroll-reveal" aria-labelledby="homeMessagesTitle">
                     <h2 class="home-messages__heading" id="homeMessagesTitle">Messages &amp; Commitment</h2>
                     <div class="home-messages__list">
-                        @if (isset($data['_commitmentFromCEO']))
-                            <article class="home-message-card">
-                                <h3>{{ $data['_commitmentFromCEO']->title ?? 'Commitment From CEO' }}</h3>
-                                <div class="home-message-card__body">
-                                    <img src="{{ \App\Facades\ViewHelper::getImagePath('aboutUs', $data['_commitmentFromCEO']->photo) }}" alt="{{ $data['_commitmentFromCEO']->title ?? 'Commitment From CEO' }}" onerror="this.onerror=null;this.src='{{ asset('images/no-image.png') }}'">
-                                    <p>{{ \App\Facades\ViewHelper::getStrippedContent($data['_commitmentFromCEO']->description, 280) }}
-                                        <a href="{{ route('about.detail', $data['_commitmentFromCEO']->slug) }}">Read more</a>
-                                    </p>
-                                </div>
-                            </article>
-                        @endif
-                        @if (isset($data['_chairmanVoice']))
-                            <article class="home-message-card">
-                                <h3>{{ $data['_chairmanVoice']->title ?? 'Chairman Voice' }}</h3>
-                                <div class="home-message-card__body">
-                                    <img src="{{ \App\Facades\ViewHelper::getImagePath('aboutUs', $data['_chairmanVoice']->photo) }}" alt="{{ $data['_chairmanVoice']->title ?? 'Chairman Voice' }}" onerror="this.onerror=null;this.src='{{ asset('images/no-image.png') }}'">
-                                    <p>{{ \App\Facades\ViewHelper::getStrippedContent($data['_chairmanVoice']->description, 280) }}
-                                        <a href="{{ route('about.detail', $data['_chairmanVoice']->slug) }}">Read more</a>
-                                    </p>
-                                </div>
-                            </article>
+                        @if (isset($data['_messages']) && $data['_messages']->count() > 0)
+                            @foreach ($data['_messages'] as $messageItem)
+                                <article class="home-message-card">
+                                    <h3>{{ $messageItem->title }}</h3>
+                                    <div class="home-message-card__body">
+                                        <img src="{{ \App\Facades\ViewHelper::getImagePath('aboutUs', $messageItem->photo) }}" alt="{{ $messageItem->title }}" onerror="this.onerror=null;this.src='{{ asset('images/no-image.png') }}'">
+                                        <p>{{ \App\Facades\ViewHelper::getStrippedContent($messageItem->description, 280) }}
+                                            <a href="{{ route('about.detail', $messageItem->slug) }}">Read more</a>
+                                        </p>
+                                    </div>
+                                </article>
+                            @endforeach
+                        @else
+                            @if (isset($data['_commitmentFromCEO']))
+                                <article class="home-message-card">
+                                    <h3>{{ $data['_commitmentFromCEO']->title ?? 'Commitment From CEO' }}</h3>
+                                    <div class="home-message-card__body">
+                                        <img src="{{ \App\Facades\ViewHelper::getImagePath('aboutUs', $data['_commitmentFromCEO']->photo) }}" alt="{{ $data['_commitmentFromCEO']->title ?? 'Commitment From CEO' }}" onerror="this.onerror=null;this.src='{{ asset('images/no-image.png') }}'">
+                                        <p>{{ \App\Facades\ViewHelper::getStrippedContent($data['_commitmentFromCEO']->description, 280) }}
+                                            <a href="{{ route('about.detail', $data['_commitmentFromCEO']->slug) }}">Read more</a>
+                                        </p>
+                                    </div>
+                                </article>
+                            @endif
+                            @if (isset($data['_chairmanVoice']))
+                                <article class="home-message-card">
+                                    <h3>{{ $data['_chairmanVoice']->title ?? 'Chairman Voice' }}</h3>
+                                    <div class="home-message-card__body">
+                                        <img src="{{ \App\Facades\ViewHelper::getImagePath('aboutUs', $data['_chairmanVoice']->photo) }}" alt="{{ $data['_chairmanVoice']->title ?? 'Chairman Voice' }}" onerror="this.onerror=null;this.src='{{ asset('images/no-image.png') }}'">
+                                        <p>{{ \App\Facades\ViewHelper::getStrippedContent($data['_chairmanVoice']->description, 280) }}
+                                            <a href="{{ route('about.detail', $data['_chairmanVoice']->slug) }}">Read more</a>
+                                        </p>
+                                    </div>
+                                </article>
+                            @endif
                         @endif
                     </div>
                 </section>
@@ -980,14 +994,13 @@
     <!--------- Testimonial / Statistics Section --------->
 
 
-    <!--------- Statistics Section --------->
-    @php $isSavingsStatistics = \Illuminate\Support\Str::contains($data['site_setting_title'] ?? '', 'बचतको प्रकारहरू'); @endphp
-    <section class="home-stat-overview-section my-5 py-2 {{ $isSavingsStatistics ? 'home-stat-overview-section--savings' : '' }}" aria-labelledby="stat-overview-title">
+    <!--------- Statistics Section / Key Indicators --------->
+    <section class="home-stat-overview-section my-5 py-2" aria-labelledby="stat-overview-title">
         <div class="container-xl">
             <div class="text-center mb-4 pb-2">
                 <span class="statistics-eyebrow">KEY INDICATORS</span>
                 <h2 id="stat-overview-title" class="home-stat-main-title">
-                    {{ $data['site_setting_title'] ?? 'वित्तीय परिसूचकहरू' }}
+                    {{ $data['site_setting_title'] ?? 'मुख्य वित्तीय परिसूचकहरू' }}
                 </h2>
                 <div class="home-section-accent mx-auto"></div>
             </div>
@@ -1018,13 +1031,8 @@
                                                             </span>
                                                         @endif
                                                     </div>
-                                                    @if($isSavingsStatistics)
-                                                        <h3 class="home-stat-card-label home-savings-card-title mb-2">{{ $statprofile->name }}</h3>
-                                                        <p class="home-savings-card-detail mb-0">{{ $statprofile->value }}</p>
-                                                    @else
-                                                        <h3 class="home-stat-card-value text-break mb-1">{{ $statprofile->value ?? 0 }}</h3>
-                                                        <p class="home-stat-card-label mb-0">{{ $statprofile->name }}</p>
-                                                    @endif
+                                                    <h3 class="home-stat-card-value text-break mb-1">{{ $statprofile->value ?? 0 }}</h3>
+                                                    <p class="home-stat-card-label mb-0">{{ $statprofile->name }}</p>
                                                 </div>
                                             </div>
                                         </div>
@@ -1078,13 +1086,8 @@
                                                             </span>
                                                         @endif
                                                     </div>
-                                                    @if($isSavingsStatistics)
-                                                        <h3 class="home-stat-card-label home-savings-card-title mb-2">{{ $statprofile->name }}</h3>
-                                                        <p class="home-savings-card-detail mb-0">{{ $statprofile->value }}</p>
-                                                    @else
-                                                        <h3 class="home-stat-card-value text-break mb-2">{{ $statprofile->value ?? 0 }}</h3>
-                                                        <p class="home-stat-card-label mb-0">{{ $statprofile->name }}</p>
-                                                    @endif
+                                                    <h3 class="home-stat-card-value text-break mb-2">{{ $statprofile->value ?? 0 }}</h3>
+                                                    <p class="home-stat-card-label mb-0">{{ $statprofile->name }}</p>
                                                 </div>
                                             </div>
                                         </div>
@@ -1272,7 +1275,7 @@
                                     </div>
                                     <div class="contact-detail-text">
                                         <strong>Email</strong>
-                                        <a href="mailto:{{ $_site_setting->email ?? 'info@bagmatiproscun.org.np' }}">{{ $_site_setting->email ?? 'info@bagmatiproscun.org.np' }}</a>
+                                        <a href="mailto:{{ $_site_setting->email ?? 'info@mafscun.coop.np' }}">{{ $_site_setting->email ?? 'info@mafscun.coop.np' }}</a>
                                     </div>
                                 </li>
                             </ul>

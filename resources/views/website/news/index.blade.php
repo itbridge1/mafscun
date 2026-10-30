@@ -5,7 +5,7 @@
 @section('meta')
     @include('website.common.meta', [
     '_title' => "News",
-    '_detail' => "News List Of Bagmati Proscun",
+    '_detail' => "News List - " . ($_site_setting->title ?? "MAFSCUN"),
     '_folder' => 'news',
     '_photo' => @$_news->first()->photo,
 ])

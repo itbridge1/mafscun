@@ -3,7 +3,7 @@
 @section('meta')
     @include('website.common.meta', [
     '_title' => "Notices",
-    '_detail' => "Notice List Of Bagmati Proscun",
+    '_detail' => "Notice List - " . ($_site_setting->title ?? "MAFSCUN"),
     '_folder' => 'notice',
     '_photo' => $_notices->first()->photo?? "",
 ])

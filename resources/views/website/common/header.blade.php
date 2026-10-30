@@ -351,7 +351,7 @@
 
             <li class="location-item">
                 <i class="fa fa-map-marker"></i>
-                <span>{{ $_site_setting->location ?? "Banepa -7" }}</span>
+                <span>{{ $_site_setting->location ?? $_site_setting->address ?? "हेटौंडा, मकवानपुर" }}</span>
             </li>
 
             @if(isset($_site_setting->email) && !empty($_site_setting->email))
@@ -363,9 +363,9 @@
             </li>
             @else
             <li>
-                <a href="mailto:info@bagmatiproscun.org.np">
+                <a href="mailto:info@mafscun.coop.np">
                     <i class="fa fa-envelope"></i>
-                    <span>info@bagmatiproscun.org.np</span>
+                    <span>info@mafscun.coop.np</span>
                 </a>
             </li>
             @endif

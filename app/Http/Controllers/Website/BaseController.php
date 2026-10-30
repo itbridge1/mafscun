@@ -46,7 +46,7 @@ class BaseController extends Controller
                 ->active()
                 ->rank()
                 ->get());
-            $view->with('_aboutMenu', AboutUs::select('title','slug')->rank()->active()->get());
+            $view->with('_aboutMenu', AboutUs::select('title','slug')->where('is_message', 0)->rank()->active()->get());
             $view->with('_footer1', $this->getMenuBySiteSetting($siteSetting->footer_1, 20));
             $view->with('_footer2', $this->getMenuBySiteSetting($siteSetting->footer_2, 20));
             $view->with('_footer3', $this->getMenuBySiteSetting($siteSetting->footer_3, 20));

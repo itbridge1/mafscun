@@ -4,7 +4,7 @@
 @section('meta')
     @include('website.common.meta', [
     '_title' => isset($_service) ? $_service->title : 'Services',
-    '_detail' => isset($_service) ? strip_tags($_service->description) : 'Explore the services offered by Bagmati PROSCUN.',
+    '_detail' => isset($_service) ? strip_tags($_service->description) : ('Explore the services offered by ' . ($_site_setting->title ?? 'MAFSCUN') . '.'),
     '_folder' => 'serviceCategory',
     '_photo' => isset($_service) ? $_service->photo : null,
 ])
@@ -454,7 +454,7 @@
     @else
     <section class="container-xl service-directory" aria-labelledby="serviceDirectoryTitle">
         <div class="service-directory-intro">
-            <p class="service-directory-kicker">Bagmati PROSCUN</p>
+            <p class="service-directory-kicker">{{ $_site_setting->title ?? 'MAFSCUN' }}</p>
             <h2 class="service-directory-title" id="serviceDirectoryTitle">Explore our services</h2>
             <p class="service-directory-summary">Find the guidance, programs, and support available to our member cooperatives.</p>
         </div>

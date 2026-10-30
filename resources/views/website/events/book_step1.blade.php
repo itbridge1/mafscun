@@ -217,7 +217,7 @@
 
                             <h5 class="mb-4 text-primary border-bottom pb-2 mt-5">Cooperative Membership</h5>
                             <div class="form-group mb-4">
-                                <label class="font-weight-bold text-dark">Is your Cooperative a member of Bagmati Proscun? <span class="text-danger">*</span></label>
+                                <label class="font-weight-bold text-dark">Is your Cooperative a member of {{ $_site_setting->title ?? 'the Union' }}? <span class="text-danger">*</span></label>
                                 <div class="custom-control custom-radio mb-2">
                                     <input type="radio" id="is_member_yes" name="is_member" class="custom-control-input" value="1" {{ old('is_member', session('booking_is_member', 1)) == 1 ? 'checked' : '' }}>
                                     <label class="custom-control-label font-weight-bold ml-2 text-dark" for="is_member_yes">Yes, Member</label>

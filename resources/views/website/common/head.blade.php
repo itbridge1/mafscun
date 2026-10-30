@@ -1,5 +1,5 @@
 <head>
-    <title>@yield('title') ||  {{ $_site_setting->title ?? "Bagmati PROSCUN" }} </title>
+    <title>@hasSection('title')@yield('title') | @endif{{ $_site_setting->title ?? "MAFSCUN" }}</title>
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -7,9 +7,10 @@
     <link rel="icon" href="{{ \App\Facades\ViewHelper::getImagePath('siteSetting', $_site_setting->site_favicon) }}" type="image/x-icon">
     <link rel="shortcut icon" href="{{ \App\Facades\ViewHelper::getImagePath('siteSetting', $_site_setting->site_favicon) }}" type="image/x-icon">
     <link rel="apple-touch-icon" href="{{ \App\Facades\ViewHelper::getImagePath('siteSetting', $_site_setting->site_favicon) }}">
-	<meta name="google-site-verification" content="ctGa90qa43WdsGLltz-5BelYcGLsDfAhPzaX69j7rXw" />
+    @if(!empty($_site_setting->google_site_verification))
+        <meta name="google-site-verification" content="{{ $_site_setting->google_site_verification }}" />
+    @endif
     @yield('meta')
-	    <meta name="google-site-verification" content="ctGa90qa43WdsGLltz-5BelYcGLsDfAhPzaX69j7rXw" />
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="{{ asset('website/assets/css/bootstrap.min.css') }}">
 

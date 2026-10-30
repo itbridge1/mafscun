@@ -3,7 +3,7 @@
     <div class="float-right d-none d-sm-inline-block">
         <b>
             <a href="{{ $_site_setting->powered_by_link ?? "https://itbridge.com.np" }}">
-                      <p>© {{ date('Y') }} All Rights Reserved Bagmati Proscun</p>
+                      <p>© {{ date('Y') }} All Rights Reserved {{ $_site_setting->title ?? 'MAFSCUN' }}</p>
             </a>
         </b>
     </div>

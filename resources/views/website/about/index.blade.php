@@ -5,7 +5,7 @@
     @include('website.common.meta', [
     '_title' => $_aboutUs->title ?? "About Us",
     '_keywords' => $_site_setting->keywords,
-    '_detail' => strip_tags($_aboutUs->description ?? '') ?? "Bagmati Proscun",
+    '_detail' => strip_tags($_aboutUs->description ?? '') ?: ($_site_setting->title ?? "MAFSCUN"),
     '_folder' => 'aboutUs',
     '_photo' => $_aboutUs->photo ?? '',
 ])

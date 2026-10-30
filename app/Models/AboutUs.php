@@ -16,6 +16,12 @@ class AboutUs extends BaseModel
         'photo',
         'description',
         'status',
+        'is_message',
         'rank',
+    ];
+
+    protected $casts = [
+        'is_message' => 'boolean',
+        'status' => 'boolean',
     ];
 }

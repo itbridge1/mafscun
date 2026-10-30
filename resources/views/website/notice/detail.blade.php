@@ -286,7 +286,7 @@
                                             @if($latest_notice->start_date)
                                                 Active: {{ $latest_notice->start_date }}
                                             @else
-                                                Bagmati Proscun
+                                                {{ $_site_setting->title ?? 'MAFSCUN' }}
                                             @endif
                                             <a href="{{ route('notices.detail', $latest_notice->slug) }}">View</a>
                                         </p>

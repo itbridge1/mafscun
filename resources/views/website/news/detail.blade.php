@@ -320,7 +320,7 @@
                         @if($_news->parent)
                             <li><span class="badge">{{ $_news->parent->title }}</span></li>
                         @endif
-                        <li style="color: #64748b; font-size: 0.9rem;"><i class="fa fa-user" style="color: var(--brand-green);"></i> <span class="ml-1">{{ $_news->author ?? "Bagmati PROSCUN" }}</span></li>
+                        <li style="color: #64748b; font-size: 0.9rem;"><i class="fa fa-user" style="color: var(--brand-green);"></i> <span class="ml-1">{{ $_news->author ?: ($_site_setting->title ?? "MAFSCUN") }}</span></li>
                         <li style="color: #64748b; font-size: 0.9rem;"><i class="fa fa-clock" style="color: var(--brand-green);"></i> <span class="ml-1">{{ $_news->created_at->format('M d, Y') }} ({{ $_news->created_at->diffForHumans() }})</span></li>
                         @if($_news->location)
                             <li style="color: #64748b; font-size: 0.9rem;"><i class="fa fa-map-marker-alt" style="color: var(--brand-green);"></i> <span class="ml-1">{{ $_news->location }}</span></li>
@@ -355,7 +355,7 @@
                                             <h6>{{ $trend->title }}</h6>
                                         </a>
                                         <p>
-                                            {{ $trend->author ?? "Bagmati Proscun" }} 
+                                            {{ $trend->author ?: ($_site_setting->title ?? "MAFSCUN") }} 
                                             @if($trend->location)
                                                 - {{ $trend->location }}
                                             @endif

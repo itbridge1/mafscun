@@ -3,7 +3,7 @@
 @section('meta')
     @include('website.common.meta', [
     '_title' => "Resources",
-    '_detail' => "Resources List Of Bagmati Proscun",
+    '_detail' => "Resources List - " . ($_site_setting->title ?? "MAFSCUN"),
     '_folder' => 'resource',
     '_photo' => $_resources->first()->photo?? "",
 ])
@@ -257,7 +257,7 @@
             <!-- Filter Panel -->
             <div class="col-12">
                 <div class="resource-filter-panel">
-                    <div class="mb-3"><h2 class="resource-filter-title"><i class="fas fa-folder-open mr-2 text-success"></i>Resource library</h2><p class="resource-filter-caption">Browse publications, guides and useful documents from Bagmati PROSCUN.</p></div>
+                    <div class="mb-3"><h2 class="resource-filter-title"><i class="fas fa-folder-open mr-2 text-success"></i>Resource library</h2><p class="resource-filter-caption">Browse publications, guides and useful documents from {{ $_site_setting->title ?? 'MAFSCUN' }}.</p></div>
                     <form action="{{ route('resource-list') }}" method="get" role="search" aria-label="Filter resources">
                         <div class="form-group">
                             <label class="sr-only" for="filter_resource_type">Resource type</label>
