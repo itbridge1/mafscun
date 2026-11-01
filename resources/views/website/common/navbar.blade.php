@@ -86,8 +86,10 @@
         position: absolute !important;
         left: 100% !important;
         top: -6px !important;
-        margin-left: 4px !important;
-        z-index: 1060 !important;
+        /* Keep the child panel touching its parent so the hover target does not
+           disappear while the pointer crosses into the submenu. */
+        margin-left: 0 !important;
+        z-index: 1080 !important;
         min-width: 220px !important;
         background: #ffffff !important;
         border-radius: 10px !important;
