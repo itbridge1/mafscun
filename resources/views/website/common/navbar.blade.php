@@ -77,7 +77,10 @@
     }
 
     /* Submenu (Level 2 & Level 3) dropdown positioning & styles */
-    .main-navbar .dropdown-menu {
+    /* Ensure the parent dropdown allows child absolute positioning to escape */
+    .main-navbar .dropdown-menu,
+    .main-navbar .dropdown-menu > li,
+    .main-navbar .dropdown-menu > li > ul {
         overflow: visible !important;
     }
 
@@ -85,29 +88,28 @@
         display: none !important;
         position: absolute !important;
         left: 100% !important;
-        top: -6px !important;
-        /* Keep the child panel touching its parent so the hover target does not
-           disappear while the pointer crosses into the submenu. */
-        margin-left: 0 !important;
+        top: 0 !important;
+        margin-left: 2px !important;
         z-index: 1080 !important;
         min-width: 220px !important;
         background: #ffffff !important;
         border-radius: 10px !important;
         box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15) !important;
         border: 1px solid #e2e8f0 !important;
+        /* Prevent Bootstrap's .show class from interfering */
+        pointer-events: none;
     }
 
     .main-navbar .dropdown-menu li {
         position: relative !important;
+        list-style: none !important;
     }
 
-    .main-navbar .dropdown-menu li:hover > .dropdown-submenu {
-        display: block !important;
-        animation: dropdownEntrance 0.2s cubic-bezier(0.25, 0.8, 0.25, 1) forwards !important;
-    }
-
+    .main-navbar .dropdown-menu li:hover > .dropdown-submenu,
     .main-navbar .dropdown-menu li:focus-within > .dropdown-submenu {
         display: block !important;
+        pointer-events: auto !important;
+        animation: dropdownEntrance 0.2s cubic-bezier(0.25, 0.8, 0.25, 1) forwards !important;
     }
 
     .main-navbar .dropdown-menu .dropdown-item {
@@ -285,12 +287,14 @@
             display: none !important;
             border-left: 2px solid var(--brand-green, #01a755) !important;
             background-color: transparent !important;
+            pointer-events: none !important;
         }
 
         /* Keep mobile flyouts collapsed until their category is opened. */
         .main-navbar .dropdown-menu li:hover > .dropdown-submenu,
         .main-navbar .dropdown-menu li:focus-within > .dropdown-submenu {
             display: block !important;
+            pointer-events: auto !important;
         }
     }
 

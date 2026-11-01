@@ -468,7 +468,7 @@
                                             <i class="fas fa-chevron-right text-muted" style="font-size: 0.75rem;"></i>
                                         </a>
                                     </li>
-                                endforeach
+                                @endforeach
                             </ul>
                         </div>
                     @endif
