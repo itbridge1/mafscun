@@ -36,6 +36,11 @@ class ServiceCategory extends BaseModel
         return 'serviceCategory';
     }
 
+    public function getUrlAttribute(): string
+    {
+        return url('service/' . $this->slug);
+    }
+
     public function subCategories() : HasMany
     {
         return $this->hasMany(ServiceSubCategory::class, 'service_category_id')->orderBy('rank');

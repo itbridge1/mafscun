@@ -15,7 +15,9 @@ use App\Models\News;
 use App\Models\Notice;
 use App\Models\Resource;
 use App\Models\ResourceType;
+use App\Models\Service;
 use App\Models\ServiceCategory;
+use App\Models\ServiceSubCategory;
 use App\Models\SiteSetting;
 use App\Models\Slider;
 use App\Models\StatisticsDetail;
@@ -284,9 +286,20 @@ $data['_serviceslist'] = ServiceCategory::select('title','slug','photo')->active
 
     public function service()
     {
-        $_services = ServiceCategory::active()->whereNull('parent_id')->rank()->paginate(10);
+        $_categories = ServiceCategory::active()
+            ->rank()
+            ->with([
+                'subCategories' => function ($q) {
+                    $q->active()->rank()->with(['services' => fn($sq) => $sq->active()->rank()]);
+                },
+                'directServices' => fn($q) => $q->active()->rank()
+            ])
+            ->paginate(12);
 
-        return view($this->loadCommonDataToView('website.services.index'),compact('_services'));
+        $_level = 'directory';
+        $_title = 'Services';
+
+        return view($this->loadCommonDataToView('website.services.index'), compact('_categories', '_level', '_title'));
     }
 
     public function serviceDetail($slug)
@@ -294,52 +307,126 @@ $data['_serviceslist'] = ServiceCategory::select('title','slug','photo')->active
         // 1. Try finding ServiceCategory
         $serviceCategory = ServiceCategory::with([
             'subCategories' => function ($q) {
-                $q->active()->rank()->with(['services' => function ($sq) {
-                    $sq->active()->rank();
-                }]);
+                $q->active()->rank()->with(['services' => fn($sq) => $sq->active()->rank()]);
             },
-            'directServices' => function ($q) {
-                $q->active()->rank();
-            },
-            'children' => function ($q) {
-                $q->active()->rank();
-            }
+            'directServices' => fn($q) => $q->active()->rank()
         ])->where('slug', $slug)->active()->first();
 
         if ($serviceCategory) {
+            $_level = 'category';
+            $_category = $serviceCategory;
             $_service = $serviceCategory;
-            if ($serviceCategory->subCategories->count() > 0) {
-                $_service->children = $serviceCategory->subCategories;
-            } elseif ($serviceCategory->directServices->count() > 0) {
-                $_service->children = $serviceCategory->directServices;
-            }
-            return view($this->loadCommonDataToView('website.services.index'), compact('_service'));
+            $_subCategories = $serviceCategory->subCategories;
+            $_directServices = $serviceCategory->directServices;
+            $_title = $serviceCategory->title;
+
+            return view($this->loadCommonDataToView('website.services.index'), compact(
+                '_level', '_category', '_service', '_subCategories', '_directServices', '_title'
+            ));
         }
 
-        // 2. Try finding ServiceSubCategory
-        $serviceSubCategory = \App\Models\ServiceSubCategory::with([
+        // 2. Fallback: try finding ServiceSubCategory directly (e.g. legacy/direct slug)
+        $subCat = ServiceSubCategory::with([
             'category',
-            'services' => function ($q) {
-                $q->active()->rank();
-            }
+            'services' => fn($q) => $q->active()->rank()
         ])->where('slug', $slug)->active()->first();
 
-        if ($serviceSubCategory) {
-            $_service = $serviceSubCategory;
-            $_service->children = $serviceSubCategory->services;
-            return view($this->loadCommonDataToView('website.services.index'), compact('_service'));
+        if ($subCat) {
+            if ($subCat->category) {
+                return redirect()->to($subCat->url);
+            }
+            $_level = 'subcategory';
+            $_category = $subCat->category;
+            $_subCategory = $subCat;
+            $_service = $subCat;
+            $_services = $subCat->services;
+            $_title = $subCat->title;
+
+            return view($this->loadCommonDataToView('website.services.index'), compact(
+                '_level', '_category', '_subCategory', '_service', '_services', '_title'
+            ));
         }
 
-        // 3. Try finding Service
-        $serviceItem = \App\Models\Service::with(['category', 'subCategory'])
+        // 3. Fallback: try finding Service directly
+        $serviceItem = Service::with(['category', 'subCategory'])
             ->where('slug', $slug)->active()->first();
 
         if ($serviceItem) {
-            $_service = $serviceItem;
-            return view($this->loadCommonDataToView('website.services.index'), compact('_service'));
+            return redirect()->to($serviceItem->url);
         }
 
         abort(404);
+    }
+
+    public function serviceSecondLevel($categorySlug, $secondSlug)
+    {
+        $category = ServiceCategory::where('slug', $categorySlug)->active()->firstOrFail();
+
+        // Check if $secondSlug is a SubCategory
+        $subCategory = ServiceSubCategory::where('service_category_id', $category->id)
+            ->where('slug', $secondSlug)
+            ->active()
+            ->with(['services' => fn($q) => $q->active()->rank()])
+            ->first();
+
+        if ($subCategory) {
+            $_level = 'subcategory';
+            $_category = $category;
+            $_subCategory = $subCategory;
+            $_service = $subCategory;
+            $_services = $subCategory->services;
+            $_allSubCategories = $category->subCategories()->active()->rank()->get();
+            $_title = $subCategory->title;
+
+            return view($this->loadCommonDataToView('website.services.index'), compact(
+                '_level', '_category', '_subCategory', '_service', '_services', '_allSubCategories', '_title'
+            ));
+        }
+
+        // Check if $secondSlug is a direct Service (without subcategory)
+        $serviceItem = Service::where('service_category_id', $category->id)
+            ->whereNull('service_sub_category_id')
+            ->where('slug', $secondSlug)
+            ->active()
+            ->first();
+
+        if ($serviceItem) {
+            $_level = 'service';
+            $_category = $category;
+            $_subCategory = null;
+            $_service = $serviceItem;
+            $_siblingServices = $category->directServices()->where('id', '!=', $serviceItem->id)->active()->rank()->get();
+            $_title = $serviceItem->title;
+
+            return view($this->loadCommonDataToView('website.services.index'), compact(
+                '_level', '_category', '_subCategory', '_service', '_siblingServices', '_title'
+            ));
+        }
+
+        abort(404);
+    }
+
+    public function serviceItem($categorySlug, $subCategorySlug, $serviceSlug)
+    {
+        $category = ServiceCategory::where('slug', $categorySlug)->active()->firstOrFail();
+        $subCategory = ServiceSubCategory::where('service_category_id', $category->id)
+            ->where('slug', $subCategorySlug)->active()->firstOrFail();
+        $serviceItem = Service::where('service_category_id', $category->id)
+            ->where('service_sub_category_id', $subCategory->id)
+            ->where('slug', $serviceSlug)
+            ->active()
+            ->firstOrFail();
+
+        $_level = 'service';
+        $_category = $category;
+        $_subCategory = $subCategory;
+        $_service = $serviceItem;
+        $_siblingServices = $subCategory->services()->where('id', '!=', $serviceItem->id)->active()->rank()->get();
+        $_title = $serviceItem->title;
+
+        return view($this->loadCommonDataToView('website.services.index'), compact(
+            '_level', '_category', '_subCategory', '_service', '_siblingServices', '_title'
+        ));
     }
 
     public function resources(Request $request)

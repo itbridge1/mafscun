@@ -88,6 +88,8 @@ Route::get('career', [\App\Http\Controllers\Website\HomeController::class,'caree
 Route::get('notices/{slug}', [\App\Http\Controllers\Website\HomeController::class,'noticeDetail'])->name('notices.detail');
 
 Route::get('service', [\App\Http\Controllers\Website\HomeController::class,'service'])->name('service');
+Route::get('service/{category}/{subcategory}/{service}', [\App\Http\Controllers\Website\HomeController::class, 'serviceItem'])->name('service.item');
+Route::get('service/{category}/{second}', [\App\Http\Controllers\Website\HomeController::class, 'serviceSecondLevel'])->name('service.second');
 Route::get('service/{slug}', [\App\Http\Controllers\Website\HomeController::class,'serviceDetail'])->name('service.detail');
 
 Route::get('resource-list',[\App\Http\Controllers\Website\HomeController::class,'resources'])->name('resource-list');

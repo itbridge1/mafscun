@@ -76,20 +76,30 @@
         animation: dropdownEntrance 0.24s cubic-bezier(0.25, 0.8, 0.25, 1) forwards !important;
     }
 
-    /* Submenu (Level 2) dropdown positioning & styles */
+    /* Submenu (Level 2 & Level 3) dropdown positioning & styles */
+    .main-navbar .dropdown-menu {
+        overflow: visible !important;
+    }
+
     .main-navbar .dropdown-menu .dropdown-submenu {
         display: none !important;
         position: absolute !important;
         left: 100% !important;
         top: -6px !important;
-        margin-left: 8px !important;
+        margin-left: 4px !important;
+        z-index: 1060 !important;
+        min-width: 220px !important;
+        background: #ffffff !important;
+        border-radius: 10px !important;
+        box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15) !important;
+        border: 1px solid #e2e8f0 !important;
     }
 
-    .main-navbar .dropdown-menu > li {
+    .main-navbar .dropdown-menu li {
         position: relative !important;
     }
 
-    .main-navbar .dropdown-menu > li:hover > .dropdown-submenu {
+    .main-navbar .dropdown-menu li:hover > .dropdown-submenu {
         display: block !important;
         animation: dropdownEntrance 0.2s cubic-bezier(0.25, 0.8, 0.25, 1) forwards !important;
     }
@@ -349,7 +359,7 @@
                                 $hasChildren = $hasSubCats || $hasDirectServices;
                             @endphp
                             <li>
-                                <a class="dropdown-item {{ request()->is('service/'.$category->slug.'*')? 'active-nav':'' }}" href="{{ route('service.detail', $category->slug) }}">
+                                <a class="dropdown-item {{ request()->is('service/'.$category->slug.'*')? 'active-nav':'' }}" href="{{ $category->url }}">
                                     {{ $category->title }}
                                     @if($hasChildren)
                                         <i class="fas fa-chevron-right float-right" style="font-size: 10px; line-height: 1.8;"></i>
@@ -360,7 +370,7 @@
                                         @foreach($category->subCategories as $subCat)
                                             @php $hasServices = $subCat->services->count() > 0; @endphp
                                             <li>
-                                                <a style="font-size: 13px" class="dropdown-item" href="{{ route('service.detail', $subCat->slug) }}">
+                                                <a style="font-size: 13px" class="dropdown-item" href="{{ $subCat->url }}">
                                                     {{ $subCat->title }}
                                                     @if($hasServices)
                                                         <i class="fas fa-chevron-right float-right" style="font-size: 9px; line-height: 2;"></i>
@@ -370,7 +380,7 @@
                                                     <ul class="dropdown-menu dropdown-submenu">
                                                         @foreach($subCat->services as $svc)
                                                             <li>
-                                                                <a style="font-size: 12px" class="dropdown-item" href="{{ route('service.detail', $svc->slug) }}">
+                                                                <a style="font-size: 12px" class="dropdown-item" href="{{ $svc->url }}">
                                                                     {{ $svc->title }}
                                                                 </a>
                                                             </li>
@@ -381,7 +391,7 @@
                                         @endforeach
                                         @foreach($category->directServices as $directSvc)
                                             <li>
-                                                <a style="font-size: 13px" class="dropdown-item" href="{{ route('service.detail', $directSvc->slug) }}">
+                                                <a style="font-size: 13px" class="dropdown-item" href="{{ $directSvc->url }}">
                                                     {{ $directSvc->title }}
                                                 </a>
                                             </li>

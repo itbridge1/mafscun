@@ -20,22 +20,31 @@ class BaseController extends Controller
 {
     protected function loadCommonDataToView($view_path)
     {
-        $serviceCategories = ServiceCategory::select('id', 'title', 'slug')
-            ->with([
+        $serviceCategories = ServiceCategory::with([
                 'subCategories' => function ($q) {
                     $q->where('status', 1)->rank()
-                      ->select('id', 'service_category_id', 'title', 'slug')
                       ->with(['services' => function ($sq) {
-                          $sq->where('status', 1)->rank()
-                            ->select('id', 'service_category_id', 'service_sub_category_id', 'title', 'slug');
+                          $sq->where('status', 1)->rank();
                       }]);
                 },
                 'directServices' => function ($q) {
-                    $q->where('status', 1)->rank()
-                      ->select('id', 'service_category_id', 'service_sub_category_id', 'title', 'slug');
+                    $q->where('status', 1)->rank();
                 },
             ])
             ->rank()->active()->get();
+
+        foreach ($serviceCategories as $cat) {
+            foreach ($cat->subCategories as $sub) {
+                $sub->setRelation('category', $cat);
+                foreach ($sub->services as $svc) {
+                    $svc->setRelation('category', $cat);
+                    $svc->setRelation('subCategory', $sub);
+                }
+            }
+            foreach ($cat->directServices as $dsvc) {
+                $dsvc->setRelation('category', $cat);
+            }
+        }
 
         $resourceTypes = ResourceType::select('id', 'title', 'slug')
             ->with([

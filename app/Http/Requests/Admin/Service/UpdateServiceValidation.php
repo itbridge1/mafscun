@@ -28,9 +28,12 @@ class UpdateServiceValidation extends FormRequest
 
     public function prepareForValidation()
     {
+        $subCatId = $this->service_sub_category_id ? (int)$this->service_sub_category_id : null;
+
         $this->merge([
-            'slug'   => Str::slug($this->title),
-            'status' => $this->status ? 1 : 0,
+            'service_sub_category_id' => $subCatId,
+            'slug'                    => Str::slug($this->title),
+            'status'                  => $this->status ? 1 : 0,
         ]);
     }
 }

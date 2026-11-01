@@ -28,6 +28,15 @@ class Service extends BaseModel
         return 'service';
     }
 
+    public function getUrlAttribute(): string
+    {
+        $catSlug = $this->category ? $this->category->slug : 'category';
+        if ($this->subCategory) {
+            return url('service/' . $catSlug . '/' . $this->subCategory->slug . '/' . $this->slug);
+        }
+        return url('service/' . $catSlug . '/' . $this->slug);
+    }
+
     public function category(): BelongsTo
     {
         return $this->belongsTo(ServiceCategory::class, 'service_category_id');

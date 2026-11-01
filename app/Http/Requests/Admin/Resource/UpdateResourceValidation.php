@@ -51,8 +51,9 @@ class UpdateResourceValidation extends FormRequest
     public function prepareForValidation()
     {
         $this->merge([
-            'slug' => Str::slug($this->title),
-            'status' => $this->status ? 1 : 0
+            'resource_sub_type_id' => $this->resource_sub_type_id ? (int)$this->resource_sub_type_id : null,
+            'slug'                 => Str::slug($this->title),
+            'status'               => $this->status ? 1 : 0
         ]);
     }
 }

@@ -44,9 +44,18 @@ class StoreResourceValidation extends FormRequest
 
     public function prepareForValidation()
     {
+        $slug = Str::slug($this->title);
+        if (!$slug) {
+            $slug = 'resource-' . time();
+        }
+        if (\App\Models\Resource::where('slug', $slug)->exists()) {
+            $slug .= '-' . time();
+        }
+
         $this->merge([
-            'slug' => Str::slug($this->title),
-            'status' => $this->status ? 1 : 0
+            'resource_sub_type_id' => $this->resource_sub_type_id ? (int)$this->resource_sub_type_id : null,
+            'slug'                 => $slug,
+            'status'               => $this->status ? 1 : 0
         ]);
     }
 

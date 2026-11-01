@@ -2,6 +2,19 @@
     $breadcrumbParents = [];
     if (request()->routeIs('events.show')) {
         $breadcrumbParents[] = ['label' => 'Events', 'url' => route('events.index')];
+    } elseif (request()->routeIs('service.item')) {
+        $breadcrumbParents[] = ['label' => 'Services', 'url' => route('service')];
+        if (isset($_category)) {
+            $breadcrumbParents[] = ['label' => $_category->title, 'url' => $_category->url];
+        }
+        if (isset($_subCategory)) {
+            $breadcrumbParents[] = ['label' => $_subCategory->title, 'url' => $_subCategory->url];
+        }
+    } elseif (request()->routeIs('service.second')) {
+        $breadcrumbParents[] = ['label' => 'Services', 'url' => route('service')];
+        if (isset($_category)) {
+            $breadcrumbParents[] = ['label' => $_category->title, 'url' => $_category->url];
+        }
     } elseif (request()->routeIs('service.detail')) {
         $breadcrumbParents[] = ['label' => 'Services', 'url' => route('service')];
     } elseif (request()->routeIs('news.detail')) {

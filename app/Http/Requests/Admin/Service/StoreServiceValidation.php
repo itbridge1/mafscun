@@ -34,10 +34,13 @@ class StoreServiceValidation extends FormRequest
             $slug .= '-' . time();
         }
 
+        $subCatId = $this->service_sub_category_id ? (int)$this->service_sub_category_id : null;
+
         $this->merge([
-            'slug'   => $slug,
-            'rank'   => ViewHelper::getMaxRank(Service::class),
-            'status' => $this->status ? 1 : 0,
+            'service_sub_category_id' => $subCatId,
+            'slug'                    => $slug,
+            'rank'                    => ViewHelper::getMaxRank(Service::class),
+            'status'                  => $this->status ? 1 : 0,
         ]);
     }
 }
