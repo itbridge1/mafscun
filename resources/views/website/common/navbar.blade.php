@@ -282,9 +282,15 @@
             left: 0 !important;
             top: 0 !important;
             margin-left: 10px !important;
-            display: block !important;
+            display: none !important;
             border-left: 2px solid var(--brand-green, #01a755) !important;
             background-color: transparent !important;
+        }
+
+        /* Keep mobile flyouts collapsed until their category is opened. */
+        .main-navbar .dropdown-menu li:hover > .dropdown-submenu,
+        .main-navbar .dropdown-menu li:focus-within > .dropdown-submenu {
+            display: block !important;
         }
     }
 
