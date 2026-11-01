@@ -78,37 +78,40 @@
 
     /* Submenu (Level 2 & Level 3) dropdown positioning & styles */
     /* Ensure the parent dropdown allows child absolute positioning to escape */
-    .main-navbar .dropdown-menu,
-    .main-navbar .dropdown-menu > li,
-    .main-navbar .dropdown-menu > li > ul {
+    .main-navbar .dropdown-menu {
         overflow: visible !important;
     }
 
-    .main-navbar .dropdown-menu .dropdown-submenu {
-        display: none !important;
+    /* The submenu — no longer using Bootstrap's dropdown-menu class */
+    .main-navbar .dropdown-submenu {
+        display: none;
         position: absolute !important;
         left: 100% !important;
         top: 0 !important;
         margin-left: 2px !important;
-        z-index: 1080 !important;
+        z-index: 1090 !important;
         min-width: 220px !important;
+        padding: 10px 8px !important;
         background: #ffffff !important;
         border-radius: 10px !important;
         box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15) !important;
         border: 1px solid #e2e8f0 !important;
-        /* Prevent Bootstrap's .show class from interfering */
-        pointer-events: none;
+        list-style: none !important;
     }
 
-    .main-navbar .dropdown-menu li {
+    .main-navbar .dropdown-menu > li {
         position: relative !important;
         list-style: none !important;
     }
 
-    .main-navbar .dropdown-menu li:hover > .dropdown-submenu,
-    .main-navbar .dropdown-menu li:focus-within > .dropdown-submenu {
+    .main-navbar .dropdown-submenu > li {
+        position: relative !important;
+        list-style: none !important;
+    }
+
+    .main-navbar .dropdown-menu > li:hover > .dropdown-submenu,
+    .main-navbar .dropdown-submenu > li:hover > .dropdown-submenu {
         display: block !important;
-        pointer-events: auto !important;
         animation: dropdownEntrance 0.2s cubic-bezier(0.25, 0.8, 0.25, 1) forwards !important;
     }
 
@@ -279,7 +282,7 @@
             margin-top: 5px;
         }
         
-        .main-navbar .dropdown-menu .dropdown-submenu {
+        .main-navbar .dropdown-submenu {
             position: relative !important;
             left: 0 !important;
             top: 0 !important;
@@ -287,14 +290,13 @@
             display: none !important;
             border-left: 2px solid var(--brand-green, #01a755) !important;
             background-color: transparent !important;
-            pointer-events: none !important;
+            box-shadow: none !important;
         }
 
         /* Keep mobile flyouts collapsed until their category is opened. */
-        .main-navbar .dropdown-menu li:hover > .dropdown-submenu,
-        .main-navbar .dropdown-menu li:focus-within > .dropdown-submenu {
+        .main-navbar .dropdown-menu > li:hover > .dropdown-submenu,
+        .main-navbar .dropdown-submenu > li:hover > .dropdown-submenu {
             display: block !important;
-            pointer-events: auto !important;
         }
     }
 
@@ -387,7 +389,7 @@
                                     @endif
                                 </a>
                                 @if($hasChildren)
-                                    <ul class="dropdown-menu dropdown-submenu">
+                                    <ul class="dropdown-submenu">
                                         @foreach($category->subCategories as $subCat)
                                             @php $hasServices = $subCat->services->count() > 0; @endphp
                                             <li>
@@ -398,7 +400,7 @@
                                                     @endif
                                                 </a>
                                                 @if($hasServices)
-                                                    <ul class="dropdown-menu dropdown-submenu">
+                                                    <ul class="dropdown-submenu">
                                                         @foreach($subCat->services as $svc)
                                                             <li>
                                                                 <a style="font-size: 12px" class="dropdown-item" href="{{ $svc->url }}">
@@ -475,7 +477,7 @@
                                     @endif
                                 </a>
                                 @if($hasSubTypes)
-                                    <ul class="dropdown-menu dropdown-submenu">
+                                    <ul class="dropdown-submenu">
                                         @foreach($rType->subTypes as $subType)
                                             <li>
                                                 <a style="font-size: 13px" class="dropdown-item {{ request('filter_resource_type') == $rType->id && request('filter_sub_type') == $subType->id ? 'active-nav' : '' }}" href="{{ route('resource-list', ['filter_resource_type' => $rType->id, 'filter_sub_type' => $subType->id]) }}">
