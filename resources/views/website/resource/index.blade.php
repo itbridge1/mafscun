@@ -268,6 +268,17 @@
                             ]) !!}
                         </div>
                         <div class="form-group">
+                            <label class="sr-only" for="filter_sub_type">Resource subtype</label>
+                            <select class="form-control" name="filter_sub_type" id="filter_sub_type" aria-label="Filter by resource subtype">
+                                <option value="">-- ALL SUBTYPES --</option>
+                                @foreach($_resourceSubTypes as $subType)
+                                    <option value="{{ $subType->id }}" data-resource-type="{{ $subType->resource_type_id }}" {{ (string) request()->query('filter_sub_type') === (string) $subType->id ? 'selected' : '' }}>
+                                        {{ $subType->title }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="form-group">
                             <label class="sr-only" for="filter_title">Search resources by title</label>
                             {!! Form::text('filter_title', request()->query('filter_title'), [
                                 'class' => 'form-control',
@@ -280,7 +291,7 @@
                             <button type="submit" class="btn-search btn">
                                 <i class="fas fa-search mr-1"></i> Search
                             </button>
-                            @if(request()->filled('filter_resource_type') || request()->filled('filter_title'))
+                            @if(request()->filled('filter_resource_type') || request()->filled('filter_sub_type') || request()->filled('filter_title'))
                                 <a class="resource-clear-link" href="{{ route('resource-list') }}">Clear filters</a>
                             @endif
                         </div>
@@ -363,4 +374,28 @@
         </div>
     </div>
     <!-- =============End Pagination Section ============== -->
+    <script>
+        (() => {
+            const typeSelect = document.getElementById('filter_resource_type');
+            const subtypeSelect = document.getElementById('filter_sub_type');
+            if (!typeSelect || !subtypeSelect) return;
+
+            const updateSubtypes = (resetInvalidSelection) => {
+                const selectedType = typeSelect.value;
+                const selectedOption = subtypeSelect.options[subtypeSelect.selectedIndex];
+                if (resetInvalidSelection && selectedOption && selectedOption.dataset.resourceType && selectedOption.dataset.resourceType !== selectedType) {
+                    subtypeSelect.value = '';
+                }
+                Array.from(subtypeSelect.options).forEach((option) => {
+                    if (!option.dataset.resourceType) return;
+                    const visible = !selectedType || option.dataset.resourceType === selectedType;
+                    option.hidden = !visible;
+                    option.disabled = !visible;
+                });
+            };
+
+            typeSelect.addEventListener('change', () => updateSubtypes(true));
+            updateSubtypes(false);
+        })();
+    </script>
 @endsection

@@ -104,6 +104,15 @@
         animation: dropdownEntrance 0.2s cubic-bezier(0.25, 0.8, 0.25, 1) forwards !important;
     }
 
+    .main-navbar .dropdown-menu li:focus-within > .dropdown-submenu {
+        display: block !important;
+    }
+
+    .main-navbar .dropdown-menu .dropdown-item {
+        white-space: normal;
+        line-height: 1.4;
+    }
+
     /* ============================
        HAMBURGER BUTTON STYLING
        ============================ */
@@ -447,7 +456,7 @@
                         @foreach($_resource_types as $rType)
                             @php $hasSubTypes = $rType->subTypes->count() > 0; @endphp
                             <li>
-                                <a class="dropdown-item" href="{{ route('resource-list', ['filter_resource_type' => $rType->id]) }}">
+                                <a class="dropdown-item {{ request('filter_resource_type') == $rType->id && !request('filter_sub_type') ? 'active-nav' : '' }}" href="{{ route('resource-list', ['filter_resource_type' => $rType->id]) }}" @if($hasSubTypes) aria-haspopup="true" aria-expanded="false" @endif>
                                     {{ $rType->title }}
                                     @if($hasSubTypes)
                                         <i class="fas fa-chevron-right float-right" style="font-size: 10px; line-height: 1.8;"></i>
@@ -457,7 +466,7 @@
                                     <ul class="dropdown-menu dropdown-submenu">
                                         @foreach($rType->subTypes as $subType)
                                             <li>
-                                                <a style="font-size: 13px" class="dropdown-item" href="{{ route('resource-list', ['filter_resource_type' => $rType->id, 'filter_sub_type' => $subType->id]) }}">
+                                                <a style="font-size: 13px" class="dropdown-item {{ request('filter_resource_type') == $rType->id && request('filter_sub_type') == $subType->id ? 'active-nav' : '' }}" href="{{ route('resource-list', ['filter_resource_type' => $rType->id, 'filter_sub_type' => $subType->id]) }}">
                                                     {{ $subType->title }}
                                                 </a>
                                             </li>

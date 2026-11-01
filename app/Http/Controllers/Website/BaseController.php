@@ -20,7 +20,7 @@ class BaseController extends Controller
 {
     protected function loadCommonDataToView($view_path)
     {
-        $serviceCategories = ServiceCategory::with([
+        $serviceCategories = ServiceCategory::whereNull('parent_id')->with([
                 'subCategories' => function ($q) {
                     $q->where('status', 1)->rank()
                       ->with(['services' => function ($sq) {

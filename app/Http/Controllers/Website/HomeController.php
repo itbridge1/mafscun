@@ -14,6 +14,7 @@ use App\Models\Municipality;
 use App\Models\News;
 use App\Models\Notice;
 use App\Models\Resource;
+use App\Models\ResourceSubType;
 use App\Models\ResourceType;
 use App\Models\Service;
 use App\Models\ServiceCategory;
@@ -432,6 +433,7 @@ $data['_serviceslist'] = ServiceCategory::select('title','slug','photo')->active
     public function resources(Request $request)
     {
         $_resourceTypes = ResourceType::active()->pluck('title','id');
+        $_resourceSubTypes = ResourceSubType::active()->rank()->get(['id', 'resource_type_id', 'title']);
         $resourceType = $request->input('filter_resource_type');
         $filterSubType = $request->input('filter_sub_type');
         $filterTitle = trim((string) $request->input('filter_title', ''));
@@ -449,7 +451,7 @@ $data['_serviceslist'] = ServiceCategory::select('title','slug','photo')->active
             ->latest()->paginate(20)
             ->appends($request->only(['filter_resource_type', 'filter_sub_type', 'filter_title']));
 
-        return view($this->loadCommonDataToView('website.resource.index'),compact('_resources','_resourceTypes'));
+        return view($this->loadCommonDataToView('website.resource.index'),compact('_resources','_resourceTypes','_resourceSubTypes'));
     }
 
     public function notice()
