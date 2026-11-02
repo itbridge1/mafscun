@@ -43,7 +43,10 @@ class SiteSettingController extends BaseController
         $data = [];
         $data['aboutUs'] = AboutUs::active()->pluck('title','id');
         $data['categories'] = ServiceCategory::active()->whereNull('parent_id')->pluck('title','id');
-        $data['menus'] = Menu::active()->whereNull('parent_id')->pluck('title','id');
+        $data['menus'] = Menu::active()->orderBy('rank')->get()->mapWithKeys(function ($menu) {
+            $label = $menu->parent_id ? '— ' . $menu->title : $menu->title;
+            return [$menu->id => $label];
+        });
         $data['row'] = SiteSetting::first();
 
         return view(parent::loadCommonDataToView($this->view_path . '.create'),compact('data'));

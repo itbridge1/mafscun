@@ -45,6 +45,11 @@ class UpdateSiteSettingValidation extends FormRequest
             'footer_2'                  => ['nullable', 'integer', 'exists:menus,id'],
             'footer_3'                  => ['nullable', 'integer', 'exists:menus,id'],
             'footer_4'                  => ['nullable', 'integer', 'exists:menus,id'],
+            'footer_links'              => ['nullable', 'array', 'max:20'],
+            'footer_links.*.type'       => ['required', 'in:menu,custom'],
+            'footer_links.*.menu_id'    => ['nullable', 'integer', 'exists:menus,id'],
+            'footer_links.*.label'      => ['nullable', 'string', 'max:255'],
+            'footer_links.*.url'        => ['nullable', 'string', 'max:2048'],
             'about_1'                   => ['nullable', 'integer', 'exists:about_us,id'],
             'about_2'                   => ['nullable', 'integer', 'exists:about_us,id'],
             'about_3'                   => ['nullable', 'integer', 'exists:about_us,id'],
@@ -67,6 +72,15 @@ class UpdateSiteSettingValidation extends FormRequest
             'statisticsData.*.value'    => ['required_with:statisticsData.*.name', 'string', 'max:255'],
             'statisticsData.*.rank'     => ['required_with:statisticsData.*.name', 'integer', 'min:0'],
         ];
+
+        foreach ($this->input('footer_links', []) as $index => $link) {
+            if (($link['type'] ?? null) === 'menu') {
+                $rules["footer_links.$index.menu_id"] = ['required', 'integer', 'exists:menus,id'];
+            } else {
+                $rules["footer_links.$index.label"] = ['required', 'string', 'max:255'];
+                $rules["footer_links.$index.url"] = ['required', 'string', 'max:2048'];
+            }
+        }
 
         foreach (array_keys($this->allFiles()) as $fileKey) {
             if (preg_match('/^stat_photo_\d+$/', $fileKey)) {

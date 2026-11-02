@@ -29,6 +29,7 @@ class SiteSetting extends Model
         'footer_2',
         'footer_3',
         'footer_4',
+        'footer_links',
         'about_1',
         'about_2',
         'about_3',
@@ -49,6 +50,7 @@ class SiteSetting extends Model
 
     protected $casts = [
         'social'     => 'array',
+        'footer_links' => 'array',
     ];
 
     public function markAsRead()

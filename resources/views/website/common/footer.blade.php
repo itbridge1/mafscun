@@ -20,32 +20,15 @@ $footerIntroText = $footerIntro
     ? \Illuminate\Support\Str::limit(trim(preg_replace('/\s+/u', ' ', strip_tags($footerIntro->description ?? ''))), 420, '…')
     : strip_tags($_site_setting->footer_text ?? '');
 
-    // Clean dynamic menu items to ensure e-library and old brand mentions are completely removed
-    $cleanMenuFilter = function($menu) {
-        if (!$menu || !isset($menu->children)) return collect();
-        return $menu->children->filter(function($item) {
-            $titleLower = strtolower($item->title ?? '');
-            $urlLower = strtolower($item->menu_url ?? '');
-            return !str_contains($titleLower, 'e-library')
-                && !str_contains($titleLower, 'e library')
-                && !str_contains($titleLower, 'elibrary')
-                && !str_contains($titleLower, 'bagmati proscun')
-                && !str_contains($urlLower, 'elibrary.bagmatiproscun');
-        });
-    };
-
-    $footer1Links = $cleanMenuFilter($_footer1 ?? null);
-    $footer2Links = $cleanMenuFilter($_footer2 ?? null);
-    $footer3Links = $cleanMenuFilter($_footer3 ?? null);
-    $footer4Links = $cleanMenuFilter($_footer4 ?? null);
-    $footerMenus = collect([
-        ['menu' => $_footer1 ?? null, 'links' => $footer1Links],
-        ['menu' => $_footer2 ?? null, 'links' => $footer2Links],
-        ['menu' => $_footer3 ?? null, 'links' => $footer3Links],
-        ['menu' => $_footer4 ?? null, 'links' => $footer4Links],
-    ])->filter(function ($footer) {
-        return $footer['menu'] && $footer['links']->isNotEmpty();
-    });
+    $footerLinks = collect($_site_setting->footer_links ?? [])->map(function ($link) {
+        if (($link['type'] ?? null) === 'menu') {
+            $menu = \App\Models\Menu::active()->find($link['menu_id'] ?? null);
+            return $menu ? ['label' => $menu->title, 'url' => $menu->menu_url] : null;
+        }
+        return !empty($link['label']) && !empty($link['url'])
+            ? ['label' => $link['label'], 'url' => $link['url']]
+            : null;
+    })->filter();
 @endphp
 
 <footer>
@@ -86,31 +69,14 @@ $footerIntroText = $footerIntro
                 </ul>
             </div>
 
-            @forelse($footerMenus as $footer)
-                <div class="col-lg-2 col-md-6 footer-item mb-4 mb-lg-0">
-                    <h3>{{ $footer['menu']->title }}</h3>
-                    <ul class="footer-link-list">
-                        @foreach($footer['links'] as $link)
-                            <li>
-                                <a href="{{ $link->menu_url ?: '#' }}"
-                                   @if(\Illuminate\Support\Str::startsWith($link->menu_url ?? '', ['http://', 'https://'])) target="_blank" rel="noopener noreferrer" @endif>
-                                    {{ $link->title }}
-                                </a>
-                            </li>
-                        @endforeach
-                    </ul>
-                </div>
-            @empty
-                <div class="col-lg-3 col-md-6 footer-item mb-4 mb-lg-0">
-                    <h3>Important links</h3>
-                    <ul class="footer-link-list">
-                        <li><a href="{{ route('news') }}">Latest news</a></li>
-                        @if(config('services.events_enabled', true))<li><a href="{{ route('events.index') }}">Events</a></li>@endif
-                        <li><a href="{{ route('notices') }}">Notices</a></li>
-                        <li><a href="{{ route('resource-list') }}">Resources</a></li>
-                    </ul>
-                </div>
-            @endforelse
+            <div class="col-lg-3 col-md-6 footer-item mb-4 mb-lg-0">
+                <h3>Important links</h3>
+                <ul class="footer-link-list">
+                    @foreach($footerLinks as $link)
+                        <li><a href="{{ $link['url'] ?: '#' }}" @if(\Illuminate\Support\Str::startsWith($link['url'] ?? '', ['http://', 'https://'])) target="_blank" rel="noopener noreferrer" @endif>{{ $link['label'] }}</a></li>
+                    @endforeach
+                </ul>
+            </div>
         </div>
     </div>
     <!-- ==========end footer top section========== -->
