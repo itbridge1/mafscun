@@ -1,5 +1,3 @@
-@section('css')
-@parent
 <style>
     /* ============================================================
        NAVBAR BASE STYLES
@@ -303,8 +301,6 @@
         }
     }
 </style>
-@endsection
-
 <nav class="navbar navbar-expand-xl sticky-top navbar-light bg-white py-2 main-navbar">
     <div class="public-nav-inner">
         <!-- Brand Logo -->
