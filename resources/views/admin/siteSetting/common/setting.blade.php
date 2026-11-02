@@ -74,10 +74,10 @@
             <div class="row">
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label>First Footer</label> <span class="red">*</span>
+                        <label>Important Links Menu</label>
                         {!! Form::select('footer_1', $data['menus'],null,[
                               'class'=> $errors->has('footer_1')?'form-control is-invalid':'form-control',
-                              'placeholder'=>"--SELECT FIRST FOOTER MENU--",
+                              'placeholder'=>"--SELECT IMPORTANT LINKS MENU--",
                         ]) !!}
                         @error('footer_1')
                         <span class="help-block invalid-feedback">
@@ -89,10 +89,10 @@
 
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label>Second Footer</label> <span class="red">*</span>
+                        <label>Additional Footer Menu 1</label>
                         {!! Form::select('footer_2', $data['menus'],null,[
                               'class'=> $errors->has('footer_2')?'form-control is-invalid':'form-control',
-                              'placeholder'=>"--SELECT SECOND FOOTER MENU--",
+                              'placeholder'=>"--SELECT ADDITIONAL MENU--",
                         ]) !!}
                         @error('footer_2')
                         <span class="help-block invalid-feedback">
@@ -104,10 +104,10 @@
 
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label>Third Footer</label> <span class="red">*</span>
+                        <label>Additional Footer Menu 2</label>
                         {!! Form::select('footer_3', $data['menus'],null,[
                               'class'=> $errors->has('footer_3')?'form-control is-invalid':'form-control',
-                              'placeholder'=>"--SELECT THIRD FOOTER MENU--",
+                              'placeholder'=>"--SELECT ADDITIONAL MENU--",
                         ]) !!}
                         @error('footer_3')
                         <span class="help-block invalid-feedback">
@@ -119,10 +119,10 @@
 
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label>Fourth Footer</label>
+                        <label>Additional Footer Menu 3</label>
                         {!! Form::select('footer_4', $data['menus'],null,[
                               'class'=> $errors->has('footer_4')?'form-control is-invalid':'form-control',
-                              'placeholder'=>"--SELECT FOURTH FOOTER MENU--",
+                              'placeholder'=>"--SELECT ADDITIONAL MENU--",
                         ]) !!}
                         @error('footer_4')
                         <span class="help-block invalid-feedback">

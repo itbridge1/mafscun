@@ -38,6 +38,14 @@ $footerIntroText = $footerIntro
     $footer2Links = $cleanMenuFilter($_footer2 ?? null);
     $footer3Links = $cleanMenuFilter($_footer3 ?? null);
     $footer4Links = $cleanMenuFilter($_footer4 ?? null);
+    $footerMenus = collect([
+        ['menu' => $_footer1 ?? null, 'links' => $footer1Links],
+        ['menu' => $_footer2 ?? null, 'links' => $footer2Links],
+        ['menu' => $_footer3 ?? null, 'links' => $footer3Links],
+        ['menu' => $_footer4 ?? null, 'links' => $footer4Links],
+    ])->filter(function ($footer) {
+        return $footer['menu'] && $footer['links']->isNotEmpty();
+    });
 @endphp
 
 <footer>
@@ -78,56 +86,31 @@ $footerIntroText = $footerIntro
                 </ul>
             </div>
 
-            <!-- Col 3: Dynamic Important Links -->
-            <div class="col-lg-3 col-md-6 footer-item mb-4 mb-lg-0">
-                <h3>{{ $_footer1->title ?? 'Important links' }}</h3>
-                @if($footer1Links->count() > 0)
+            @forelse($footerMenus as $footer)
+                <div class="col-lg-2 col-md-6 footer-item mb-4 mb-lg-0">
+                    <h3>{{ $footer['menu']->title }}</h3>
                     <ul class="footer-link-list">
-                        @foreach($footer1Links as $link)
+                        @foreach($footer['links'] as $link)
                             <li>
-                                <a href="{{ $link->menu_url }}" 
-                                   @if(\Illuminate\Support\Str::startsWith($link->menu_url, ['http://', 'https://'])) target="_blank" rel="noopener noreferrer" @endif>
+                                <a href="{{ $link->menu_url ?: '#' }}"
+                                   @if(\Illuminate\Support\Str::startsWith($link->menu_url ?? '', ['http://', 'https://'])) target="_blank" rel="noopener noreferrer" @endif>
                                     {{ $link->title }}
                                 </a>
                             </li>
                         @endforeach
                     </ul>
-                @else
+                </div>
+            @empty
+                <div class="col-lg-3 col-md-6 footer-item mb-4 mb-lg-0">
+                    <h3>Important links</h3>
                     <ul class="footer-link-list">
                         <li><a href="{{ route('news') }}">Latest news</a></li>
                         @if(config('services.events_enabled', true))<li><a href="{{ route('events.index') }}">Events</a></li>@endif
                         <li><a href="{{ route('notices') }}">Notices</a></li>
                         <li><a href="{{ route('resource-list') }}">Resources</a></li>
                     </ul>
-                @endif
-            </div>
-
-            <!-- Col 4: Additional Dynamic Links / Updates -->
-            <div class="col-lg-3 col-md-6 footer-item mb-4 mb-lg-0">
-                @if($footer2Links->count() > 0)
-                    <h3>{{ $_footer2->title ?? 'Useful links' }}</h3>
-                    <ul class="footer-link-list">
-                        @foreach($footer2Links as $link)
-                            <li>
-                                <a href="{{ $link->menu_url }}" 
-                                   @if(\Illuminate\Support\Str::startsWith($link->menu_url, ['http://', 'https://'])) target="_blank" rel="noopener noreferrer" @endif>
-                                    {{ $link->title }}
-                                </a>
-                            </li>
-                        @endforeach
-                        @if(config('services.events_enabled', true))<li><a href="{{ route('events.index') }}">Upcoming events</a></li>@endif
-                        <li><a href="{{ route('resource-list') }}">Resources</a></li>
-                    </ul>
-                @else
-                    <h3>News &amp; updates</h3>
-                    <ul class="footer-link-list">
-                        <li><a href="{{ route('news') }}">Latest news</a></li>
-                        @if(config('services.events_enabled', true))<li><a href="{{ route('events.index') }}">Events</a></li>@endif
-                        <li><a href="{{ route('notices') }}">Notices</a></li>
-                        <li><a href="{{ route('resource-list') }}">Resources</a></li>
-                    </ul>
-                @endif
-            </div>
+                </div>
+            @endforelse
         </div>
     </div>
     <!-- ==========end footer top section========== -->
