@@ -54,6 +54,82 @@ nav.main-navbar .action-buttons-mobile .btn-primary { color: #fff !important; ba
 nav.main-navbar .action-buttons-mobile .btn-outline-success { color: var(--public-green) !important; border-color: #b7d5c3 !important; }
 nav.main-navbar .action-buttons-mobile .btn-outline-success:hover { color: #fff !important; background: var(--public-green) !important; }
 
+/* Services and Resources use nested flyouts rather than Bootstrap dropdowns. */
+nav.main-navbar .nav-has-flyout { position: relative; }
+nav.main-navbar .nav-flyout,
+nav.main-navbar .nav-flyout-sub,
+nav.main-navbar .nav-flyout-sub2 {
+    display: none;
+    position: absolute;
+    z-index: 1200;
+    min-width: 230px;
+    max-height: calc(100vh - 120px);
+    overflow-y: auto;
+    margin: 0;
+    padding: 8px;
+    list-style: none;
+    border: 1px solid var(--public-line);
+    border-top: 3px solid var(--public-green);
+    border-radius: 10px;
+    background: #fff;
+    box-shadow: 0 14px 35px rgba(20,45,32,.14);
+}
+nav.main-navbar .nav-flyout { top: 100%; left: 0; }
+nav.main-navbar .nav-flyout-sub,
+nav.main-navbar .nav-flyout-sub2 { top: -4px; left: 100%; min-width: 220px; }
+nav.main-navbar .nav-flyout-sub2 { min-width: 200px; }
+nav.main-navbar .nav-has-flyout:hover > .nav-flyout,
+nav.main-navbar .nav-flyout-item:hover > .nav-flyout-sub,
+nav.main-navbar .nav-flyout-item:hover > .nav-flyout-sub2,
+nav.main-navbar .nav-has-flyout:focus-within > .nav-flyout,
+nav.main-navbar .nav-flyout-item:focus-within > .nav-flyout-sub,
+nav.main-navbar .nav-flyout-item:focus-within > .nav-flyout-sub2 { display: block; }
+nav.main-navbar .nav-flyout-item { position: relative; list-style: none; }
+nav.main-navbar .nav-flyout-item > a {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 8px 12px;
+    border-radius: 6px;
+    color: #40564a;
+    font-size: .88rem;
+    font-weight: 600;
+    line-height: 1.4;
+    text-decoration: none;
+    white-space: nowrap;
+}
+nav.main-navbar .nav-flyout-item > a:hover,
+nav.main-navbar .nav-flyout-item > a:focus,
+nav.main-navbar .nav-flyout-item > a.active-nav { color: var(--public-green); background: var(--public-soft); }
+nav.main-navbar .nav-flyout-item > a .flyout-arrow { flex: 0 0 auto; font-size: .7rem; opacity: .65; }
+
+@media (max-width: 1199.98px) {
+    nav.main-navbar .nav-has-flyout { position: static; }
+    nav.main-navbar .nav-flyout,
+    nav.main-navbar .nav-flyout-sub,
+    nav.main-navbar .nav-flyout-sub2 {
+        position: static;
+        min-width: 0;
+        max-height: none;
+        overflow: visible;
+        margin: 4px 0 0;
+        padding: 5px 0 5px 8px;
+        border: 0;
+        border-left: 3px solid var(--public-green);
+        border-radius: 0 8px 8px 0;
+        background: #f4fcf7;
+        box-shadow: none;
+    }
+    nav.main-navbar .nav-has-flyout:hover > .nav-flyout,
+    nav.main-navbar .nav-flyout-item:hover > .nav-flyout-sub,
+    nav.main-navbar .nav-flyout-item:hover > .nav-flyout-sub2 { display: none; }
+    nav.main-navbar .nav-has-flyout.flyout-open > .nav-flyout,
+    nav.main-navbar .nav-flyout-item.flyout-open > .nav-flyout-sub,
+    nav.main-navbar .nav-flyout-item.flyout-open > .nav-flyout-sub2 { display: block; }
+    nav.main-navbar .nav-flyout-item > a { white-space: normal; }
+}
+
 /* Reusable page heading used by public listing and detail pages. */
 .global-page-hero { position: relative; margin: 0 0 34px !important; padding: 40px 0 38px !important; overflow: hidden; background: linear-gradient(110deg, #f0f7f1, #f8faf7) !important; border-bottom: 1px solid var(--public-line); }
 .global-page-hero::after { content: ""; position: absolute; top: -92px; right: max(7vw, 35px); width: 230px; height: 230px; border: 1px solid rgba(8,120,75,.1); border-radius: 50%; box-shadow: 0 0 0 26px rgba(8,120,75,.025), 0 0 0 54px rgba(8,120,75,.02); pointer-events: none; }
