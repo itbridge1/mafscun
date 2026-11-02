@@ -198,10 +198,12 @@
         display: none;
         position: absolute;
         top: -6px;
-        left: 100%;
-        margin-left: 4px;
+        left: calc(100% - 2px);
+        margin-left: 0;
         z-index: 1300;
         min-width: 220px;
+        max-height: 80vh;
+        overflow-y: auto;
         background: #ffffff;
         border: 1px solid #e2e8f0;
         border-top: 3px solid #01a755;
@@ -210,6 +212,18 @@
         padding: 8px 6px;
         list-style: none;
         margin-top: 0;
+    }
+
+    /* Invisible hover buffer so moving mouse diagonally doesn't close the submenu */
+    .nav-flyout-sub::before,
+    .nav-flyout-sub2::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -20px;
+        width: 24px;
+        height: 100%;
+        pointer-events: auto;
     }
 
     /* Show level-2 on hover */
@@ -229,10 +243,12 @@
         display: none;
         position: absolute;
         top: -6px;
-        left: 100%;
-        margin-left: 4px;
+        left: calc(100% - 2px);
+        margin-left: 0;
         z-index: 1400;
         min-width: 200px;
+        max-height: 75vh;
+        overflow-y: auto;
         background: #ffffff;
         border: 1px solid #e2e8f0;
         border-top: 3px solid #00acf1;
