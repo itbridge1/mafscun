@@ -48,6 +48,11 @@ nav.main-navbar .nav-link.active-nav { color: var(--public-green) !important; ba
 nav.main-navbar .dropdown-menu { border: 1px solid var(--public-line) !important; border-top: 3px solid var(--public-green) !important; border-radius: 10px !important; padding: 7px !important; box-shadow: 0 14px 35px rgba(20,45,32,.12) !important; }
 nav.main-navbar .dropdown-item { color: #40564a !important; border-radius: 6px; }
 nav.main-navbar .dropdown-item:hover { color: var(--public-green) !important; background: var(--public-soft) !important; }
+@media (min-width: 1200px) {
+    nav.main-navbar .navbar-nav > .dropdown { position: relative; }
+    nav.main-navbar .navbar-nav > .dropdown:hover > .dropdown-menu,
+    nav.main-navbar .navbar-nav > .dropdown:focus-within > .dropdown-menu { display: block !important; }
+}
 nav.main-navbar .action-buttons-mobile { flex: 0 0 auto; gap: 8px; margin-left: 10px !important; }
 nav.main-navbar .action-buttons-mobile .btn { margin: 0 !important; padding: 8px 12px !important; font-size: .78rem !important; letter-spacing: .01em; }
 nav.main-navbar .action-buttons-mobile .btn-primary { color: #fff !important; background: var(--public-green) !important; border-color: var(--public-green) !important; box-shadow: none !important; }
@@ -75,9 +80,25 @@ nav.main-navbar .nav-flyout-sub2 {
     box-shadow: 0 14px 35px rgba(20,45,32,.14);
 }
 nav.main-navbar .nav-flyout { top: 100%; left: 0; }
+/* Keep every nested level inside the parent flyout instead of beside it. */
 nav.main-navbar .nav-flyout-sub,
-nav.main-navbar .nav-flyout-sub2 { top: -4px; left: 100%; min-width: 220px; }
-nav.main-navbar .nav-flyout-sub2 { min-width: 200px; }
+nav.main-navbar .nav-flyout-sub2 {
+    position: static;
+    top: auto;
+    left: auto;
+    min-width: 0;
+    width: 100%;
+    max-height: none;
+    overflow: visible;
+    margin: 2px 0 4px 8px;
+    padding: 4px 0 4px 8px;
+    border: 0;
+    border-left: 3px solid var(--public-green);
+    border-radius: 0 8px 8px 0;
+    background: #f4fcf7;
+    box-shadow: none;
+}
+nav.main-navbar .nav-flyout-sub2 { background: #edf7ef; border-left-color: #00acf1; }
 nav.main-navbar .nav-has-flyout:hover > .nav-flyout,
 nav.main-navbar .nav-flyout-item:hover > .nav-flyout-sub,
 nav.main-navbar .nav-flyout-item:hover > .nav-flyout-sub2,

@@ -9,6 +9,49 @@
 <!-- ==========navbar section========== -->
 @include('website.common.navbar')
 <!-- ==========End nabar section========== -->
+<script>
+    (function () {
+        function isMobile() { return window.innerWidth < 1200; }
+
+        document.querySelectorAll('.nav-has-flyout > .nav-link').forEach(function (link) {
+            link.addEventListener('click', function (event) {
+                if (!isMobile()) return;
+                event.preventDefault();
+                var parent = this.closest('.nav-has-flyout');
+                var isOpen = parent.classList.contains('flyout-open');
+                document.querySelectorAll('.nav-has-flyout').forEach(function (item) {
+                    item.classList.remove('flyout-open');
+                });
+                if (!isOpen) parent.classList.add('flyout-open');
+            });
+        });
+
+        document.querySelectorAll('.nav-flyout-item > a').forEach(function (link) {
+            link.addEventListener('click', function (event) {
+                if (!isMobile()) return;
+                var parent = this.parentElement;
+                var submenu = Array.from(parent.children).find(function (child) {
+                    return child.matches('.nav-flyout-sub, .nav-flyout-sub2');
+                });
+                if (!submenu) return;
+                event.preventDefault();
+                var isOpen = parent.classList.contains('flyout-open');
+                parent.parentElement.querySelectorAll(':scope > .nav-flyout-item').forEach(function (item) {
+                    item.classList.remove('flyout-open');
+                });
+                if (!isOpen) parent.classList.add('flyout-open');
+            });
+        });
+
+        document.addEventListener('click', function (event) {
+            if (isMobile() && !event.target.closest('.nav-has-flyout')) {
+                document.querySelectorAll('.nav-has-flyout').forEach(function (item) {
+                    item.classList.remove('flyout-open');
+                });
+            }
+        });
+    })();
+</script>
 
 {{-- Load last so the public-site design layer wins over styles emitted by shared partials. --}}
 <link rel="stylesheet" href="{{ asset('website/assets/public-refresh.css') }}?v={{ filemtime(public_path('website/assets/public-refresh.css')) }}">
