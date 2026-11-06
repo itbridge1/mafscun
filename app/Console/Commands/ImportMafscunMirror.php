@@ -549,6 +549,9 @@ class ImportMafscunMirror extends Command
         $html = preg_replace('~<style\b[^>]*>.*?</style\s*>~is', '', $html);
         $html = preg_replace('~<iframe\b[^>]*>.*?</iframe\s*>~is', '', $html);
         $html = preg_replace('~<(?:div|aside)\b[^>]*class=["\'][^"\']*(?:fb-comments|fb_iframe_widget|fb-background-color|M495716ScriptRoot|td-a-rec)[^"\']*["\'][^>]*>.*?</(?:div|aside)\s*>~is', '', $html);
+        // Some archived WordPress pages contain stylesheet rules as plain text
+        // after their style tags/widgets have been stripped.
+        $html = preg_replace('~(?:^|\s)\.(?:fb-background-color|fb_iframe_widget(?:_fluid_desktop)?|tdi_[\w-]+|td-a-rec)[^{]*\{[^}]*\}\s*~i', ' ', $html);
         return preg_replace('/\s+on[a-z]+\s*=\s*(["\']).*?\1/is', '', $html);
     }
 

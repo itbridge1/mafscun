@@ -72,6 +72,16 @@ class EventController extends BaseController
         $_event = Event::with('routines')->where('slug', $slug)->active()->first();
         $this->resourceExist($_event);
 
+        // Older imported records may predate the mirror CSS cleanup. Sanitize
+        // their description at render time so cached database content cannot
+        // leak stylesheet fragments into the event layout.
+        if (str_starts_with($_event->slug, 'mafscun-')) {
+            $_event->description = $this->cleanImportedEventDescription((string) $_event->description);
+            $_event->short_description = trim(preg_replace('/\s+/u', ' ', strip_tags(
+                $this->cleanImportedEventDescription((string) $_event->short_description)
+            )));
+        }
+
         $_other_events = Event::active()->where('title', 'not like', '%E2E Test%')->where('slug', '!=', $slug)->latest()->limit(4)->get();
         $_payment_qrs  = PaymentQr::active()->get();
 
@@ -129,6 +139,15 @@ class EventController extends BaseController
         }
 
         return view($this->loadCommonDataToView('website.events.show'), compact('_event', '_other_events', '_payment_qrs', 'locationName', 'activeDraft'));
+    }
+
+    private function cleanImportedEventDescription(string $html): string
+    {
+        $html = preg_replace('~<script\b[^>]*>.*?</script\s*>~is', '', $html);
+        $html = preg_replace('~<style\b[^>]*>.*?</style\s*>~is', '', $html);
+        $html = preg_replace('~<(?:div|aside)\b[^>]*class=["\'][^"\']*(?:fb-comments|fb_iframe_widget|fb-background-color|M495716ScriptRoot|td-a-rec)[^"\']*["\'][^>]*>.*?</(?:div|aside)\s*>~is', '', $html);
+        $html = preg_replace('~(?:^|\s)\.(?:fb-background-color|fb_iframe_widget(?:_fluid_desktop)?|tdi_[\w-]+|td-a-rec)[^{]*\{[^}]*\}\s*~i', ' ', $html);
+        return trim($html);
     }
 
     /* ------------------------------------------ BOOK STEP 1: Select -- */
