@@ -2,7 +2,7 @@ name: Deploy Laravel to Server
 
 on:
   push:
-    branches: [UiRefactor]
+    branches: [main]
 
 jobs:
   deploy:
@@ -28,7 +28,7 @@ jobs:
                git clone --branch UiRefactor git@github.com:itbridge1/bagmati-proscun.git "${{ secrets.DEPLOY_PATH }}"
              fi
              cd "${{ secrets.DEPLOY_PATH }}"
-             git pull --ff-only origin UiRefactor
+             git pull --ff-only origin main
              php84 "$(command -v composer)" install --no-dev --prefer-dist --no-interaction --optimize-autoloader
              php84 artisan optimize:clear
              php84 artisan migrate --force
